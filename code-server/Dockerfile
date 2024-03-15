@@ -68,21 +68,21 @@ RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/
     chmod 755 /usr/local/bin/k9s
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.14.2"
+ARG HELM_VERSION="v3.14.3"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/local/bin linux-${TARGETARCH}/helm && \
     chmod 755 /usr/local/bin/helm
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.7.4"
+ARG TERRAFORM_VERSION="1.7.5"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
 RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip | \
         gunzip -c - > /usr/local/bin/terraform && \
     chmod 755 /usr/local/bin/terraform
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.15.5"
+ARG VAULT_VERSION="1.15.6"
 ENV VAULT_VERSION $VAULT_VERSION
 RUN curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${TARGETARCH}.zip | \
     gunzip -c - > /usr/local/bin/vault && \
