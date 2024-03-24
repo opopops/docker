@@ -1,4 +1,6 @@
-FROM cgr.dev/chainguard/wolfi-base:latest
+FROM chainguard/wolfi-base:latest
+
+LABEL org.opencontainers.image.authors="opopops"
 
 RUN apk update && \
     apk add --no-cache \
