@@ -1,0 +1,33 @@
+name: dagger
+on: workflow_dispatch
+
+jobs:
+  release:
+    name: release
+    runs-on: self-hosted
+    environment: main
+    steps:
+      - uses: actions/checkout@v3
+      -
+        name: Release Opopops Docker images
+        uses: dagger/dagger-for-github@v5
+        env:
+          REGISTRY: index.docker.io
+          REGISTRY_USERNAME: opopops
+          REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+        with:
+          version: "0.10.3"
+          verb: call
+          module: github.com/opopops/docker@main
+          args: |
+            release \
+            --src=${REGISTRY_USERNAME} \
+            --registry=${REGISTRY}/${REGISTRY_USERNAME} \
+            --registry-username=${REGISTRY_USERNAME} \
+            --registry-password=env:REGISTRY_PASSWORD \
+            --sign \
+            --cosign-password=env:COSIGN_PASSWORD \
+            --cosign-private-key=env:COSIGN_PRIVATE_KEY \
+          cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
