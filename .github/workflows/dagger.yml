@@ -18,7 +18,7 @@ jobs:
         name: Release Opopops Docker images
         uses: dagger/dagger-for-github@v5
         env:
-          REGISTRY: index.docker.io
+          REGISTRY: docker.io
           REGISTRY_USERNAME: opopops
           REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
@@ -31,8 +31,9 @@ jobs:
             release \
             --src=${REGISTRY_USERNAME} \
             --registry=${REGISTRY}/${REGISTRY_USERNAME} \
-            --registry-username=${REGISTRY_USERNAME} \
-            --registry-password=env:REGISTRY_PASSWORD \
+            --username=${REGISTRY_USERNAME} \
+            --password=env:REGISTRY_PASSWORD \
+            --platforms="linux/amd64,linux/arm64" \
             --sign \
             --cosign-password=env:COSIGN_PASSWORD \
             --cosign-private-key=env:COSIGN_PRIVATE_KEY \

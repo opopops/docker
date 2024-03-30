@@ -13,6 +13,14 @@ dagger -m github.com/opopops/docker@main \
   call container --address=chainguard/wolfi-base terminal
 ```
 
+- Build a container and export it as tarball on the host filesystem:
+
+```shell
+dagger -m github.com/opopops/docker@main \
+  call build --context="." --dockerfile="Dockerfile" \
+    export --output=<path>
+```
+
 - Build a multi-platform container and publish it:
 
 ```shell

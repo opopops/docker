@@ -41,14 +41,18 @@ class Docker:
         self,
         context: Annotated[dagger.Directory, Doc("Directory context used by the Dockerfile.")],
         dockerfile: Annotated[str, Doc("Path to the Dockerfile to use.")] = "Dockerfile",
-        platforms: Annotated[
-            str, Doc("Platforms to initialize the container with.")
-        ] = "linux/amd64,linux/arm64",
+        platforms: Annotated[str, Doc("Platforms to initialize the container with.")] | None = None,
         target: Annotated[str, Doc("Target build stage to build.")] | None = "",
     ) -> Self:
         """Build multi-platform containers"""
         containers: list[dagger.Container] = []
-        dagger_platforms = [dagger.Platform(platform) for platform in platforms.split(",")]
+        dagger_platforms: list[dagger.Platform] = []
+        if platforms:
+            dagger_platforms.extend(
+                [dagger.Platform(platform) for platform in platforms.split(",")]
+            )
+        else:
+            dagger_platforms.append(await dag.container().platform())
         for platform in dagger_platforms:
             container = dag.container(platform=platform).build(
                 context=context, dockerfile=dockerfile, target=target
@@ -114,21 +118,37 @@ class Docker:
         return self
 
     @function
+    async def export(
+        self,
+        compress: bool | None = False,
+        platform_variants: tuple[dagger.Container, ...] | None = (),
+    ) -> dagger.File:
+        """Export container"""
+        if not platform_variants:
+            platform_variants = self.platform_variants
+        forced_compression = dagger.ImageLayerCompression("Uncompressed")
+        if compress:
+            forced_compression = dagger.ImageLayerCompression("Gzip")
+        return dag.container().as_tarball(
+            forced_compression=forced_compression, platform_variants=platform_variants
+        )
+
+    @function
     async def publish(
         self,
         address: str,
         platform_variants: tuple[dagger.Container, ...] | None = None,
-        registry_username: str | None = None,
-        registry_password: dagger.Secret | None = None,
+        username: str | None = None,
+        password: dagger.Secret | None = None,
     ) -> str:
         """Publish container"""
         if not platform_variants:
             platform_variants = self.platform_variants
 
         container = dag.container()
-        if registry_username and registry_password:
+        if username and password:
             container = container.with_registry_auth(
-                address=address, username=registry_username, secret=registry_password
+                address=address, username=username, secret=password
             )
         digest = await container.publish(address=address, platform_variants=platform_variants)
         self.digest = digest
@@ -184,14 +204,15 @@ class Docker:
         self,
         src: dagger.Directory,
         registry: str,
-        cosign_password: dagger.Secret | None,
-        cosign_private_key: dagger.Secret | None,
-        registry_username: str | None = None,
-        registry_password: dagger.Secret | None = None,
+        username: str | None = None,
+        password: dagger.Secret | None = None,
         docker_config: dagger.File | None = None,
-        sign: bool | None = False,
+        platforms: str | None = None,
         scan: bool | None = False,
         fail_on: str | None = "critical",
+        sign: bool | None = False,
+        cosign_password: dagger.Secret | None = None,
+        cosign_private_key: dagger.Secret | None = None,
     ) -> list[str]:
         """Release Docker images"""
         digests: list[str] = []
@@ -199,21 +220,21 @@ class Docker:
         for dockerfile in dockerfiles:
             repository = os.path.dirname(dockerfile)
             context = src.directory(repository)
-            await self.build(context=context)
+            await self.build(context=context, platforms=platforms)
             if scan:
                 await self.scan(fail_on=fail_on)
             digest = await self.publish(
                 address=f"{registry}/{repository}:latest",
-                registry_username=registry_username,
-                registry_password=registry_password,
+                username=username,
+                password=password,
             )
             if sign:
                 await self.sign(
                     digest=digest,
                     password=cosign_password,
                     private_key=cosign_private_key,
-                    registry_username=registry_username,
-                    registry_password=registry_password,
+                    registry_username=username,
+                    registry_password=password,
                     docker_config=docker_config,
                 )
             digests.append(digest)
