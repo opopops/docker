@@ -14,12 +14,34 @@ RUN apk add --no-cache \
     gzip \
     unzip
 
+FROM base as jq
+
+# --- Install jq CLI
+ARG JQ_VERSION="1.7.1"
+ENV JQ_VERSION $JQ_VERSION
+RUN curl -fsL --output /bin/jq \
+    https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-${TARGETOS}-${TARGETARCH} && \
+    chmod 755 /bin/jq
+
+USER nonroot
+
+FROM base as yq
+
+# --- Install yq CLI
+ARG YQ_VERSION="v4.43.1"
+ENV YQ_VERSION $YQ_VERSION
+RUN curl -fsL --output /bin/yq \
+    https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_${TARGETOS}_${TARGETARCH} && \
+    chmod 755 /bin/yq
+
+USER nonroot
+
 FROM base as kubectl
 
 # --- Install kubectl CLI
 ARG KUBECTL_VERSION="v1.28.8"
 ENV KUBECTL_VERSION $KUBECTL_VERSION
-RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl \
+RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
     -o /bin/kubectl && \
     chmod 755 /bin/kubectl
 
@@ -41,8 +63,8 @@ FROM base as helm
 # --- Install helm CLI
 ARG HELM_VERSION="v3.14.3"
 ENV HELM_VERSION $HELM_VERSION
-RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-linux-${TARGETARCH}.tar.gz | \
-    tar xvzf - --strip-components=1 -C /bin linux-${TARGETARCH}/helm && \
+RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
+    tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
     chmod 755 /bin/helm
 
 USER nonroot
@@ -52,7 +74,7 @@ FROM base as terraform
 # --- Install terraform CLI
 ARG TERRAFORM_VERSION="1.7.5"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
-RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_${TARGETARCH}.zip | \
+RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip | \
     gunzip -c - > /bin/terraform && \
     chmod 755 /bin/terraform
 
@@ -63,7 +85,7 @@ FROM base as tofu
 # --- Install tofu CLI
 ARG TOFU_VERSION="1.7.0-alpha1"
 ENV TOFU_VERSION $TOFU_VERSION
-RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_linux_${TARGETARCH}.tar.gz | \
+RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin tofu && \
     chmod 755 /bin/tofu
 
@@ -74,7 +96,7 @@ FROM base as vault
 # --- Install vault CLI
 ARG VAULT_VERSION="1.15.6"
 ENV VAULT_VERSION $VAULT_VERSION
-RUN curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_${TARGETARCH}.zip | \
+RUN curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip | \
     gunzip -c - > /bin/vault && \
     chmod 755 /bin/vault
 
@@ -155,6 +177,8 @@ RUN --mount=type=cache,target=/config/.cache/pip \
     pipx install pytest
 
 # --- Install binaries
+COPY --link --from=jq /bin/jq /bin/jq
+COPY --link --from=yq /bin/yq /bin/yq
 COPY --link --from=kubectl /bin/kubectl /bin/kubectl
 COPY --link --from=k9s /bin/k9s /bin/k9s
 COPY --link --from=helm /bin/helm /bin/helm
