@@ -157,6 +157,16 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
 RUN groupadd -g 996 docker && \
     usermod -a -G docker abc
 
+# --- Install binaries
+COPY --from=jq --link /bin/jq /usr/local/bin/jq
+COPY --from=yq --link /bin/yq /usr/local/bin/yq
+COPY --from=kubectl --link /bin/kubectl /usr/local/bin/kubectl
+COPY --from=k9s --link /bin/k9s /usr/local/bin/k9s
+COPY --from=helm --link /bin/helm /usr/local/bin/helm
+COPY --from=terraform --link /bin/terraform /usr/local/bin/terraform
+COPY --from=tofu --link /bin/tofu /usr/local/bin/tofu
+COPY --from=vault --link /bin/vault /usr/local/bin/vault
+
 # --- Install pipx
 ARG PIPX_BIN_DIR=/usr/local/bin
 ARG PIPX_HOME=/usr/local/pipx
@@ -175,13 +185,3 @@ RUN --mount=type=cache,target=/config/.cache/pip \
     pipx install black && \
     pipx install pylint && \
     pipx install pytest
-
-# --- Install binaries
-COPY --link --from=jq /bin/jq /bin/jq
-COPY --link --from=yq /bin/yq /bin/yq
-COPY --link --from=kubectl /bin/kubectl /bin/kubectl
-COPY --link --from=k9s /bin/k9s /bin/k9s
-COPY --link --from=helm /bin/helm /bin/helm
-COPY --link --from=terraform /bin/terraform /bin/terraform
-COPY --link --from=tofu /bin/tofu /bin/tofu
-COPY --link --from=vault /bin/vault /bin/vault

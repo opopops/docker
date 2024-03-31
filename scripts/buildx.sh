@@ -53,7 +53,7 @@ while (("$#")); do
     shift
     ;;
   --platform | --tag)
-    BUILDX_ARGS+=" $1=\"$2\""
+    BUILDX_ARGS+=" $1=$2"
     shift 2
     ;;
   -h | --help)
