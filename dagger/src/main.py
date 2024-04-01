@@ -2,11 +2,11 @@
 
 from typing import Annotated, Self
 
-import os
 import logging
+import asyncio
 
 import dagger
-from dagger import Doc, dag, function, object_type
+from dagger import Arg, Doc, dag, field, function, object_type
 from dagger.log import configure_logging
 
 configure_logging(logging.INFO)
@@ -16,24 +16,61 @@ configure_logging(logging.INFO)
 class Docker:
     """Docker module"""
 
-    platform_variants: tuple[dagger.Container, ...] = ()
+    containers: Annotated[tuple[dagger.Container, ...], Doc("Container to use.")] = field(
+        name="container", default=()
+    )
     digest: str = ""
-
-    @function
-    def container(
-        self,
-        address: Annotated[str, Doc("Image's address from its registry.")],
-    ) -> dagger.Container:
-        """Return a container from registry"""
-        return dag.container().from_(address=address)
 
     @function(name="import")
     def import_(
         self,
         address: Annotated[str, Doc("Image's address from its registry.")],
+    ) -> dagger.Container:
+        """Return a container from registry"""
+        if not address:
+            return self.containers[0]
+        return dag.container().from_(address=address)
+
+    @function
+    async def apko(
+        self,
+        context: Annotated[dagger.Directory, Doc("Directory context used by apko.")],
+        config: Annotated[str, Doc("apko config file.")] = "apko.yaml",
+        arch: Annotated[str, Doc("Architectures to build.")] | None = None,
     ) -> Self:
-        """Import a container from registry"""
-        self.platform_variants = tuple([dag.container().from_(address=address)])
+        """Build multi-platform image using apko"""
+        containers: list[dagger.Container] = []
+        apko = dag.container().from_("chainguard/apko:latest")
+        builder = (
+            dag.container()
+            .from_("chainguard/bash:latest")
+            .with_user("nonroot")
+            .with_mounted_directory(path="/apko", source=context, owner="nonroot")
+            .with_workdir("/apko")
+            .with_file(path="/bin/apko", source=apko.file(path="/usr/bin/apko"))
+            .with_entrypoint(["/bin/apko"])
+        )
+
+        async def apko_(arch: str = "host"):
+            container: dagger.Container
+            output_tar = "/home/nonroot/image.tar"
+            cmd = ["build", "--arch", arch, config, "image:latest", output_tar]
+            tarball = await builder.with_exec(cmd).file(path=output_tar)
+            if arch == "host":
+                container = dag.container()
+            else:
+                platform = dagger.Platform(f"linux/{arch}")
+                container = dag.container(platform=platform)
+            containers.append(container.import_(source=tarball))
+
+        if arch:
+            async with asyncio.TaskGroup() as tg:
+                for arch_ in arch.split(","):
+                    tg.create_task(apko_(arch=arch_))
+        else:
+            await apko_()
+
+        self.containers = tuple(containers)
         return self
 
     @function
@@ -41,24 +78,46 @@ class Docker:
         self,
         context: Annotated[dagger.Directory, Doc("Directory context used by the Dockerfile.")],
         dockerfile: Annotated[str, Doc("Path to the Dockerfile to use.")] = "Dockerfile",
-        platforms: Annotated[str, Doc("Platforms to initialize the container with.")] | None = None,
-        target: Annotated[str, Doc("Target build stage to build.")] | None = "",
+        platform: Annotated[str, Doc("Platforms to initialize the container with.")] | None = None,
+        target: Annotated[str, Doc("Target build stage to build.")] = "",
     ) -> Self:
-        """Build multi-platform containers"""
+        """Build multi-platform image"""
         containers: list[dagger.Container] = []
-        dagger_platforms: list[dagger.Platform] = []
-        if platforms:
-            dagger_platforms.extend(
-                [dagger.Platform(platform) for platform in platforms.split(",")]
-            )
-        else:
-            dagger_platforms.append(await dag.container().platform())
-        for platform in dagger_platforms:
-            container = dag.container(platform=platform).build(
-                context=context, dockerfile=dockerfile, target=target
+
+        async def build_(
+            container: dagger.Container,
+            context: dagger.Directory,
+            dockerfile: str,
+            target: str,
+        ):
+            container = await container.build(
+                context=context,
+                dockerfile=dockerfile,
+                target=target,
             )
             containers.append(container)
-        self.platform_variants = tuple(containers)
+
+        if platform:
+            platforms = [dagger.Platform(platform) for platform in platform.split(",")]
+            async with asyncio.TaskGroup() as tg:
+                for platform in platforms:
+                    tg.create_task(
+                        build_(
+                            container=dag.container(platform=platform),
+                            context=context,
+                            dockerfile=dockerfile,
+                            target=target,
+                        )
+                    )
+        else:
+            containers.append(
+                dag.container().build(
+                    context=context,
+                    dockerfile=dockerfile,
+                    target=target,
+                )
+            )
+        self.containers = tuple(containers)
         return self
 
     @function
@@ -75,6 +134,7 @@ class Docker:
             | None
         ) = None,
         output_format: Annotated[str, Doc("Report output formatter.")] | None = "table",
+        image: Annotated[str, Doc("Grype Docker image.")] | None = "chainguard/grype:latest",
     ) -> str:
         """Return Grype scan report"""
         user = "nonroot"
@@ -86,11 +146,11 @@ class Docker:
             cmd.extend(["--fail-on", fail_on])
 
         if not container:
-            container = self.platform_variants[0]
+            container = self.containers[0]
 
         return await (
             dag.container()
-            .from_("chainguard/grype:latest")
+            .from_(image)
             .with_user(user)
             .with_env_variable("GRYPE_DB_CACHE_DIR", cache_dir)
             .with_mounted_cache(cache_dir, dag.cache_volume("grype"), owner=user)
@@ -112,20 +172,21 @@ class Docker:
             ]
             | None
         ) = "critical",
+        image: Annotated[str, Doc("Grype Docker image.")] | None = "chainguard/grype:latest",
     ) -> Self:
         """Scan container using Grype"""
-        await self.scan_report(container=container, fail_on=fail_on)
+        await self.scan_report(container=container, fail_on=fail_on, image=image)
         return self
 
     @function
     async def export(
         self,
+        platform_variants: tuple[dagger.Container, ...] | None = None,
         compress: bool | None = False,
-        platform_variants: tuple[dagger.Container, ...] | None = (),
     ) -> dagger.File:
         """Export container"""
         if not platform_variants:
-            platform_variants = self.platform_variants
+            platform_variants = self.containers
         forced_compression = dagger.ImageLayerCompression("Uncompressed")
         if compress:
             forced_compression = dagger.ImageLayerCompression("Gzip")
@@ -136,33 +197,39 @@ class Docker:
     @function
     async def publish(
         self,
-        address: str,
+        addresses: Annotated[tuple[str, ...], Arg(name="address")],
         platform_variants: tuple[dagger.Container, ...] | None = None,
         username: str | None = None,
         password: dagger.Secret | None = None,
     ) -> str:
         """Publish container"""
-        if not platform_variants:
-            platform_variants = self.platform_variants
+        digest: str = ""
 
-        container = dag.container()
-        if username and password:
-            container = container.with_registry_auth(
-                address=address, username=username, secret=password
-            )
-        digest = await container.publish(address=address, platform_variants=platform_variants)
-        self.digest = digest
+        if not platform_variants:
+            platform_variants = self.containers
+
+        for address in addresses:
+            container = dag.container()
+            if username and password:
+                container = container.with_registry_auth(
+                    address=address, username=username, secret=password
+                )
+            digest_ = await container.publish(address=address, platform_variants=platform_variants)
+            if not digest:
+                digest = digest_
+                self.digest = digest
         return digest
 
     @function
     async def sign(
         self,
-        private_key: dagger.Secret,
-        password: dagger.Secret,
-        digest: str | None = None,
-        registry_username: str | None = None,
-        registry_password: dagger.Secret | None = None,
-        docker_config: dagger.File | None = None,
+        private_key: Annotated[dagger.Secret, Doc("Cosign private key.")],
+        password: Annotated[dagger.Secret, Doc("Cosign password.")],
+        digest: Annotated[str, Doc("Docker image digest.")] | None = None,
+        registry_username: Annotated[str, Doc("Registry username.")] | None = None,
+        registry_password: Annotated[dagger.Secret, Doc("Registry password.")] | None = None,
+        docker_config: Annotated[dagger.File, Doc("Docker config.")] | None = None,
+        image: Annotated[str, Doc("Cosign Docker image.")] | None = "chainguard/cosign:latest",
     ) -> str:
         """Sign Docker image"""
         user = "nonroot"
@@ -184,7 +251,7 @@ class Docker:
 
         container = (
             dag.container()
-            .from_("chainguard/cosign:latest")
+            .from_(image)
             .with_user(user)
             .with_env_variable("COSIGN_YES", "true")
             .with_secret_variable("COSIGN_PASSWORD", password)
@@ -198,44 +265,3 @@ class Docker:
             )
 
         return await container.stdout()
-
-    @function
-    async def release(
-        self,
-        src: dagger.Directory,
-        registry: str,
-        username: str | None = None,
-        password: dagger.Secret | None = None,
-        docker_config: dagger.File | None = None,
-        platforms: str | None = None,
-        scan: bool | None = False,
-        fail_on: str | None = "critical",
-        sign: bool | None = False,
-        cosign_password: dagger.Secret | None = None,
-        cosign_private_key: dagger.Secret | None = None,
-    ) -> list[str]:
-        """Release Docker images"""
-        digests: list[str] = []
-        dockerfiles = await src.glob("**/Dockerfile")
-        for dockerfile in dockerfiles:
-            repository = os.path.dirname(dockerfile)
-            context = src.directory(repository)
-            await self.build(context=context, platforms=platforms)
-            if scan:
-                await self.scan(fail_on=fail_on)
-            digest = await self.publish(
-                address=f"{registry}/{repository}:latest",
-                username=username,
-                password=password,
-            )
-            if sign:
-                await self.sign(
-                    digest=digest,
-                    password=cosign_password,
-                    private_key=cosign_private_key,
-                    registry_username=username,
-                    registry_password=password,
-                    docker_config=docker_config,
-                )
-            digests.append(digest)
-        return digests

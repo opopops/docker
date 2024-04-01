@@ -1,0 +1,6 @@
+include: apko.yaml
+
+contents:
+  packages:
+    - apk-tools
+    - wolfi-base

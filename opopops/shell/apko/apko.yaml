@@ -1,0 +1,42 @@
+contents:
+  keyring:
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  repositories:
+    - https://packages.wolfi.dev/os
+  packages:
+    - bash
+    - busybox
+    - ca-certificates-bundle
+    - curl
+    - docker-cli
+    - git
+    - helm
+    - jq
+    - kubectl
+    - nano
+    - tree
+    - tzdata
+    - unzip
+    - vim
+    - wolfi-baselayout
+    - wolfi-keys
+    - yq
+
+accounts:
+  groups:
+    - groupname: nonroot
+      gid: 65532
+  users:
+    - username: nonroot
+      uid: 65532
+      gid: 65532
+  run-as: nonroot
+
+work-dir: /home/nonroot
+
+entrypoint:
+  command: sh -l
+
+archs:
+  - x86_64
+  - arm64

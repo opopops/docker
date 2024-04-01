@@ -1,0 +1,33 @@
+contents:
+  keyring:
+    - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+  repositories:
+    - https://packages.wolfi.dev/os
+  packages:
+    - ca-certificates-bundle
+    - openvpn
+    - wolfi-baselayout
+    - wolfi-keys
+
+accounts:
+  groups:
+    - groupname: nonroot
+      gid: 65532
+  users:
+    - username: nonroot
+      uid: 65532
+      gid: 65532
+  run-as: root
+
+work-dir: /home/nonroot
+
+entrypoint:
+  type: service-bundle
+  services:
+    openvpn: openvpn --config /etc/openvpn/client.conf
+
+stop-signal: SIGQUIT
+
+archs:
+  - x86_64
+  - arm64

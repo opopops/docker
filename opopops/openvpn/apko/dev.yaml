@@ -1,0 +1,12 @@
+include: apko.yaml
+
+contents:
+  packages:
+    - apk-tools
+    - bash
+    - busybox
+    - curl
+    - git
+    - nano
+    - vim
+    - wolfi-base

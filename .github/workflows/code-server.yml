@@ -1,0 +1,16 @@
+name: code-server
+
+on:
+  push:
+    branches:
+      - "hello"
+    paths:
+      - "opopops/code-server/**"
+  workflow_dispatch:
+
+jobs:
+  latest:
+    if: github.ref_name == 'main'
+    name: latest
+    uses: "./.github/workflows/.release-docker.yml"
+    secrets: inherit
