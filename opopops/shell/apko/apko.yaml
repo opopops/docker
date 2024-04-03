@@ -12,7 +12,6 @@ contents:
     - curl
     - jq
     - nano
-    - openssl-config-fipshardened
     - tree
     - tzdata
     - unzip
