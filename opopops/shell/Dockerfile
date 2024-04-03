@@ -43,7 +43,8 @@ LABEL org.opencontainers.image.authors="opopops"
 USER root
 
 # --- Install binaries
-COPY --link --from=jq /bin/jq /bin/jq
-COPY --link --from=yq /bin/yq /bin/yq
+RUN mkdir -p /usr/local/bin
+COPY --link --from=jq /bin/jq /usr/local/bin/jq
+COPY --link --from=yq /bin/yq /usr/local/bin/yq
 
 USER nonroot

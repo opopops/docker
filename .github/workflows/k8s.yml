@@ -1,11 +1,11 @@
-name: kubectl
+name: k8s
 
 on:
   push:
     branches:
       - "main"
     paths:
-      - "opopops/kubectl/**"
+      - "opopops/k8s/**"
   workflow_dispatch:
 
 jobs:
