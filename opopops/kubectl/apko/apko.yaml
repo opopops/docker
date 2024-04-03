@@ -6,10 +6,21 @@ contents:
     - https://packages.wolfi.dev/os
     - https://packages.cgr.dev/extras
   packages:
+    - bash
+    - busybox
     - ca-certificates-bundle
-    - openvpn
+    - curl
+    - helm
+    - jq
+    - kubectl
+    - nano
+    - tree
+    - tzdata
+    - unzip
+    - vim
     - wolfi-baselayout
     - wolfi-keys
+    - yq
 
 annotations:
   image-author: opopops
@@ -23,16 +34,12 @@ accounts:
     - username: nonroot
       uid: 65532
       gid: 65532
-  run-as: root
+  run-as: nonroot
 
 work-dir: /home/nonroot
 
 entrypoint:
-  type: service-bundle
-  services:
-    openvpn: openvpn --config /etc/openvpn/client.conf
-
-stop-signal: SIGQUIT
+  command: sh -l
 
 archs:
   - x86_64

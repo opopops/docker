@@ -1,19 +1,18 @@
 contents:
   keyring:
     - https://packages.wolfi.dev/os/wolfi-signing.rsa.pub
+    - https://packages.cgr.dev/extras/chainguard-extras.rsa.pub
   repositories:
     - https://packages.wolfi.dev/os
+    - https://packages.cgr.dev/extras
   packages:
     - bash
     - busybox
     - ca-certificates-bundle
     - curl
-    - docker-cli
-    - git
-    - helm
     - jq
-    - kubectl
     - nano
+    - openssl-config-fipshardened
     - tree
     - tzdata
     - unzip
@@ -21,6 +20,10 @@ contents:
     - wolfi-baselayout
     - wolfi-keys
     - yq
+
+annotations:
+  image-author: opopops
+  image-source: https://github.com/opopops/docker/opopops
 
 accounts:
   groups:

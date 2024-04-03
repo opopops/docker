@@ -1,0 +1,25 @@
+name: kubectl
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "opopops/kubectl/**"
+  workflow_dispatch:
+
+jobs:
+  latest:
+    if: github.ref_name == 'main'
+    name: latest
+    uses: "./.github/workflows/.release-apko.yml"
+    secrets: inherit
+
+  latest-dev:
+    if: github.ref_name == 'main'
+    name: latest-dev
+    uses: "./.github/workflows/.release-apko.yml"
+    with:
+      tag: latest-dev
+      target: dev
+    secrets: inherit

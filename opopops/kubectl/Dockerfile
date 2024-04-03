@@ -36,6 +36,28 @@ RUN curl -fsL --output /bin/yq \
 
 USER nonroot
 
+FROM base as kubectl
+
+# --- Install kubectl CLI
+ARG KUBECTL_VERSION="v1.28.8"
+ENV KUBECTL_VERSION $KUBECTL_VERSION
+RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
+    -o /bin/kubectl && \
+    chmod 755 /bin/kubectl
+
+USER nonroot
+
+FROM base as helm
+
+# --- Install helm CLI
+ARG HELM_VERSION="v3.14.3"
+ENV HELM_VERSION $HELM_VERSION
+RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
+    tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
+    chmod 755 /bin/helm
+
+USER nonroot
+
 FROM chainguard/bash:${WOLFI_VERSION}
 
 LABEL org.opencontainers.image.authors="opopops"
@@ -45,5 +67,7 @@ USER root
 # --- Install binaries
 COPY --link --from=jq /bin/jq /bin/jq
 COPY --link --from=yq /bin/yq /bin/yq
+COPY --link --from=kubectl /bin/kubectl /bin/kubectl
+COPY --link --from=helm /bin/helm /bin/helm
 
 USER nonroot

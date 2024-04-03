@@ -3,7 +3,7 @@ name: code-server
 on:
   push:
     branches:
-      - "hello"
+      - "main"
     paths:
       - "opopops/code-server/**"
   workflow_dispatch:
@@ -13,4 +13,6 @@ jobs:
     if: github.ref_name == 'main'
     name: latest
     uses: "./.github/workflows/.release-docker.yml"
+    with:
+      scan: false
     secrets: inherit
