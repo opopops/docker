@@ -37,10 +37,11 @@ class Docker:
         context: Annotated[dagger.Directory, Doc("Directory context used by apko.")],
         config: Annotated[str, Doc("apko config file.")] = "apko.yaml",
         arch: Annotated[str, Doc("Architectures to build.")] | None = None,
+        image: Annotated[str, Doc("apko Docker image.")] | None = "chainguard/apko:latest",
     ) -> Self:
         """Build multi-platform image using apko"""
         containers: list[dagger.Container] = []
-        apko = dag.container().from_("chainguard/apko:latest")
+        apko = dag.container().from_(image)
         builder = (
             dag.container()
             .from_("chainguard/bash:latest")
