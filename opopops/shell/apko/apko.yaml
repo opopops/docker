@@ -37,7 +37,7 @@ accounts:
 work-dir: /home/nonroot
 
 entrypoint:
-  command: sh -l
+  command: bash -c
 
 archs:
   - x86_64
