@@ -12,6 +12,7 @@ contents:
     - curl
     - helm
     - jq
+    - k9s
     - kubectl
     - nano
     - tree
