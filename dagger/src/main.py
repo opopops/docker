@@ -26,7 +26,7 @@ class Docker:
         self,
         address: Annotated[str, Doc("Image's address from its registry.")],
     ) -> dagger.Container:
-        """Return a container from registry"""
+        """Import a Doker image"""
         if not address:
             return self.containers[0]
         return dag.container().from_(address=address)
@@ -39,7 +39,7 @@ class Docker:
         arch: Annotated[str, Doc("Architectures to build.")] | None = None,
         image: Annotated[str, Doc("apko Docker image.")] | None = "chainguard/apko:latest",
     ) -> Self:
-        """Build multi-platform image using apko"""
+        """Build a container using apko"""
         containers: list[dagger.Container] = []
         apko = dag.container().from_(image)
         builder = (
@@ -82,7 +82,7 @@ class Docker:
         platform: Annotated[str, Doc("Platforms to initialize the container with.")] | None = None,
         target: Annotated[str, Doc("Target build stage to build.")] = "",
     ) -> Self:
-        """Build multi-platform image"""
+        """Build a container using Dockerfile"""
         containers: list[dagger.Container] = []
 
         async def build_(
@@ -137,7 +137,7 @@ class Docker:
         output_format: Annotated[str, Doc("Report output formatter.")] | None = "table",
         image: Annotated[str, Doc("Grype Docker image.")] | None = "chainguard/grype:latest",
     ) -> str:
-        """Return Grype scan report"""
+        """Scan a container using Grype and return the formatted report"""
         user = "nonroot"
         cache_dir: str = "/home/nonroot/.grype/cache"
         image_tar = "/home/nonroot/image.tar"
@@ -175,7 +175,7 @@ class Docker:
         ) = "critical",
         image: Annotated[str, Doc("Grype Docker image.")] | None = "chainguard/grype:latest",
     ) -> Self:
-        """Scan container using Grype"""
+        """Scan a container using Grype"""
         await self.scan_report(container=container, fail_on=fail_on, image=image)
         return self
 
@@ -232,7 +232,7 @@ class Docker:
         docker_config: Annotated[dagger.File, Doc("Docker config.")] | None = None,
         image: Annotated[str, Doc("Cosign Docker image.")] | None = "chainguard/cosign:latest",
     ) -> str:
-        """Sign Docker image"""
+        """Sign container"""
         user = "nonroot"
 
         if not digest:
