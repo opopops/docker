@@ -16,7 +16,7 @@ configure_logging(logging.INFO)
 class Docker:
     """Docker module"""
 
-    container: Annotated[tuple[dagger.Container, ...], Doc("Image address.")] = field(default=())
+    container: Annotated[list[dagger.Container], Doc("Image address.")] = field(default=list)
     digest: Annotated[str, Doc("Image digest.")] = field(default="")
 
     @function(name="import")
@@ -67,7 +67,7 @@ class Docker:
         else:
             await apko_()
 
-        self.container = tuple(platform_variants)
+        self.container = platform_variants
         return self
 
     @function
@@ -114,13 +114,13 @@ class Docker:
                     target=target,
                 )
             )
-        self.container = tuple(platform_variants)
+        self.container = platform_variants
         return self
 
     @function
-    async def scan_report(
+    async def scan(
         self,
-        container: Annotated[dagger.Container, Doc("Container to scan.")] | None = None,
+        container: Annotated[dagger.Container, Doc("Image to scan.")] | None = None,
         fail_on: (
             Annotated[
                 str,
@@ -157,28 +157,9 @@ class Docker:
         )
 
     @function
-    async def scan(
-        self,
-        container: Annotated[dagger.Container, Doc("Container to scan.")] | None = None,
-        fail_on: (
-            Annotated[
-                str,
-                Doc(
-                    "Set the return code to 1 if a vulnerability is found with a severity >= the given severity"
-                ),
-            ]
-            | None
-        ) = "critical",
-        image: Annotated[str, Doc("Grype Docker image.")] | None = "chainguard/grype:latest",
-    ) -> Self:
-        """Scan a container using Grype"""
-        await self.scan_report(container=container, fail_on=fail_on, image=image)
-        return self
-
-    @function
     async def export(
         self,
-        platform_variants: tuple[dagger.Container, ...] | None = None,
+        platform_variants: list[dagger.Container] | None = None,
         compress: bool | None = False,
     ) -> dagger.File:
         """Export container"""
@@ -195,7 +176,7 @@ class Docker:
     async def publish(
         self,
         addresses: Annotated[tuple[str, ...], Arg(name="address")],
-        platform_variants: tuple[dagger.Container, ...] | None = None,
+        platform_variants: list[dagger.Container] | None = None,
         username: str | None = None,
         password: dagger.Secret | None = None,
     ) -> str:
