@@ -16,10 +16,8 @@ configure_logging(logging.INFO)
 class Docker:
     """Docker module"""
 
-    containers: Annotated[tuple[dagger.Container, ...], Doc("Container to use.")] = field(
-        name="container", default=()
-    )
-    digest: str = ""
+    container: Annotated[tuple[dagger.Container, ...], Doc("Image address.")] = field(default=())
+    digest: Annotated[str, Doc("Image digest.")] = field(default="")
 
     @function(name="import")
     def import_(
@@ -27,8 +25,6 @@ class Docker:
         address: Annotated[str, Doc("Image's address from its registry.")],
     ) -> dagger.Container:
         """Import a Doker image"""
-        if not address:
-            return self.containers[0]
         return dag.container().from_(address=address)
 
     @function
@@ -37,10 +33,10 @@ class Docker:
         context: Annotated[dagger.Directory, Doc("Directory context used by apko.")],
         config: Annotated[str, Doc("apko config file.")] = "apko.yaml",
         arch: Annotated[str, Doc("Architectures to build.")] | None = None,
-        image: Annotated[str, Doc("apko Docker image.")] | None = "chainguard/apko:latest",
+        image: Annotated[str, Doc("apko Docker image.")] = "chainguard/apko:latest",
     ) -> Self:
         """Build a container using apko"""
-        containers: list[dagger.Container] = []
+        platform_variants: list[dagger.Container] = []
         apko = dag.container().from_(image)
         builder = (
             dag.container()
@@ -62,7 +58,7 @@ class Docker:
             else:
                 platform = dagger.Platform(f"linux/{arch}")
                 container = dag.container(platform=platform)
-            containers.append(container.import_(source=tarball))
+            platform_variants.append(container.import_(source=tarball))
 
         if arch:
             async with asyncio.TaskGroup() as tg:
@@ -71,7 +67,7 @@ class Docker:
         else:
             await apko_()
 
-        self.containers = tuple(containers)
+        self.container = tuple(platform_variants)
         return self
 
     @function
@@ -83,7 +79,7 @@ class Docker:
         target: Annotated[str, Doc("Target build stage to build.")] = "",
     ) -> Self:
         """Build a container using Dockerfile"""
-        containers: list[dagger.Container] = []
+        platform_variants: list[dagger.Container] = []
 
         async def build_(
             container: dagger.Container,
@@ -96,7 +92,7 @@ class Docker:
                 dockerfile=dockerfile,
                 target=target,
             )
-            containers.append(container)
+            platform_variants.append(container)
 
         if platform:
             platforms = [dagger.Platform(platform) for platform in platform.split(",")]
@@ -111,14 +107,14 @@ class Docker:
                         )
                     )
         else:
-            containers.append(
+            platform_variants.append(
                 dag.container().build(
                     context=context,
                     dockerfile=dockerfile,
                     target=target,
                 )
             )
-        self.containers = tuple(containers)
+        self.container = tuple(platform_variants)
         return self
 
     @function
@@ -134,8 +130,8 @@ class Docker:
             ]
             | None
         ) = None,
-        output_format: Annotated[str, Doc("Report output formatter.")] | None = "table",
-        image: Annotated[str, Doc("Grype Docker image.")] | None = "chainguard/grype:latest",
+        output_format: Annotated[str, Doc("Report output formatter.")] = "table",
+        image: Annotated[str, Doc("Grype Docker image.")] = "chainguard/grype:latest",
     ) -> str:
         """Scan a container using Grype and return the formatted report"""
         user = "nonroot"
@@ -147,7 +143,7 @@ class Docker:
             cmd.extend(["--fail-on", fail_on])
 
         if not container:
-            container = self.containers[0]
+            container = self.container[0]
 
         return await (
             dag.container()
@@ -187,7 +183,7 @@ class Docker:
     ) -> dagger.File:
         """Export container"""
         if not platform_variants:
-            platform_variants = self.containers
+            platform_variants = self.container
         forced_compression = dagger.ImageLayerCompression("Uncompressed")
         if compress:
             forced_compression = dagger.ImageLayerCompression("Gzip")
@@ -207,7 +203,7 @@ class Docker:
         digest: str = ""
 
         if not platform_variants:
-            platform_variants = self.containers
+            platform_variants = self.container
 
         for address in addresses:
             container = dag.container()
@@ -230,7 +226,7 @@ class Docker:
         registry_username: Annotated[str, Doc("Registry username.")] | None = None,
         registry_password: Annotated[dagger.Secret, Doc("Registry password.")] | None = None,
         docker_config: Annotated[dagger.File, Doc("Docker config.")] | None = None,
-        image: Annotated[str, Doc("Cosign Docker image.")] | None = "chainguard/cosign:latest",
+        image: Annotated[str, Doc("Cosign Docker image.")] = "chainguard/cosign:latest",
     ) -> str:
         """Sign container"""
         user = "nonroot"

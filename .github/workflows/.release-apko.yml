@@ -6,7 +6,7 @@ on:
       dagger-version:
         type: string
         required: false
-        default: "0.10.3"
+        default: "0.11.0"
       dagger-module:
         type: string
         required: false
