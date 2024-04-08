@@ -93,7 +93,7 @@ jobs:
           module: ${{ inputs.dagger-module }}
           verb: call
           args: |
-            scan-report \
+            scan \
             --container="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
             --fail-on="${{ inputs.scan-fail-on }}" \
 
