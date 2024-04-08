@@ -159,8 +159,13 @@ class Docker:
     @function
     async def export(
         self,
-        platform_variants: list[dagger.Container] | None = None,
-        compress: bool | None = False,
+        platform_variants: (
+            Annotated[
+                list[dagger.Container], Doc("Identifiers for other platform specific containers.")
+            ]
+            | None
+        ) = None,
+        compress: Annotated[bool, Doc("Enable compression.")] | None = False,
     ) -> dagger.File:
         """Export container"""
         if not platform_variants:
@@ -176,9 +181,14 @@ class Docker:
     async def publish(
         self,
         addresses: Annotated[tuple[str, ...], Arg(name="address")],
-        platform_variants: list[dagger.Container] | None = None,
-        username: str | None = None,
-        password: dagger.Secret | None = None,
+        platform_variants: (
+            Annotated[
+                list[dagger.Container], Doc("Identifiers for other platform specific containers.")
+            ]
+            | None
+        ) = None,
+        username: Annotated[str, Doc("Registry username.")] | None = None,
+        password: Annotated[dagger.Secret, Doc("Registry password.")] | None = None,
     ) -> str:
         """Publish container"""
         digest: str = ""
