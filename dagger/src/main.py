@@ -1,4 +1,4 @@
-"""Dagger module"""
+"""Build, publish, scan and sign Docker images."""
 
 from typing import Annotated, Self
 
@@ -35,7 +35,7 @@ class Docker:
         arch: Annotated[str, Doc("Architectures to build.")] | None = None,
         image: Annotated[str, Doc("apko Docker image.")] = "chainguard/apko:latest",
     ) -> Self:
-        """Build a container using apko"""
+        """Build multi-platform image using Chainguard apko tool (apk-based OCI image builder)."""
         platform_variants: list[dagger.Container] = []
         apko = dag.container().from_(image)
         builder = (
@@ -78,7 +78,7 @@ class Docker:
         platform: Annotated[str, Doc("Platforms to initialize the container with.")] | None = None,
         target: Annotated[str, Doc("Target build stage to build.")] = "",
     ) -> Self:
-        """Build a container using Dockerfile"""
+        """Build multi-platform image using Dockerfile."""
         platform_variants: list[dagger.Container] = []
 
         async def build_(
@@ -133,7 +133,7 @@ class Docker:
         output_format: Annotated[str, Doc("Report output formatter.")] = "table",
         image: Annotated[str, Doc("Grype Docker image.")] = "chainguard/grype:latest",
     ) -> str:
-        """Scan a container using Grype and return the formatted report"""
+        """Scan image with Grype and return the formatted report"""
         user = "nonroot"
         cache_dir: str = "/home/nonroot/.grype/cache"
         image_tar = "/home/nonroot/image.tar"
@@ -167,7 +167,7 @@ class Docker:
         ) = None,
         compress: Annotated[bool, Doc("Enable compression.")] | None = False,
     ) -> dagger.File:
-        """Export container"""
+        """Export image as tarball."""
         if not platform_variants:
             platform_variants = self.container
         forced_compression = dagger.ImageLayerCompression("Uncompressed")
@@ -190,7 +190,7 @@ class Docker:
         username: Annotated[str, Doc("Registry username.")] | None = None,
         password: Annotated[dagger.Secret, Doc("Registry password.")] | None = None,
     ) -> str:
-        """Publish container"""
+        """Publish multi-platform image."""
         digest: str = ""
 
         if not platform_variants:
@@ -219,7 +219,7 @@ class Docker:
         docker_config: Annotated[dagger.File, Doc("Docker config.")] | None = None,
         image: Annotated[str, Doc("Cosign Docker image.")] = "chainguard/cosign:latest",
     ) -> str:
-        """Sign container"""
+        """Sign multi-platform image with Cosign."""
         user = "nonroot"
 
         if not digest:
