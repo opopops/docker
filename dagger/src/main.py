@@ -150,7 +150,12 @@ class Docker:
             .from_(image)
             .with_user(user)
             .with_env_variable("GRYPE_DB_CACHE_DIR", cache_dir)
-            .with_mounted_cache(cache_dir, dag.cache_volume("grype"), owner=user)
+            .with_mounted_cache(
+                cache_dir,
+                dag.cache_volume("GRYPE_DB_CACHE"),
+                sharing=dagger.CacheSharingMode("LOCKED"),
+                owner=user,
+            )
             .with_file(path=image_tar, source=container.as_tarball(), owner=user)
             .with_exec(cmd)
             .stdout()
