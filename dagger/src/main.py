@@ -2,6 +2,7 @@
 
 from typing import Annotated, Self
 
+import os
 import logging
 import asyncio
 
@@ -30,8 +31,8 @@ class Docker:
     @function
     async def apko(
         self,
-        context: Annotated[dagger.Directory, Doc("Directory context used by apko.")],
-        config: Annotated[str, Doc("apko config file.")] = "apko.yaml",
+        context: Annotated[dagger.Directory, Doc("Context directory.")],
+        config: Annotated[str, Doc("Config file.")] = "apko.yaml",
         arch: Annotated[str, Doc("Architectures to build.")] | None = None,
         image: Annotated[str, Doc("apko Docker image.")] = "chainguard/apko:latest",
     ) -> Self:
@@ -42,8 +43,8 @@ class Docker:
             dag.container()
             .from_("chainguard/bash:latest")
             .with_user("nonroot")
-            .with_mounted_directory(path="/apko", source=context, owner="nonroot")
-            .with_workdir("/apko")
+            .with_mounted_directory(path="/work", source=context, owner="nonroot")
+            .with_workdir(f"/work/{os.path.dirname(config)}")
             .with_file(path="/bin/apko", source=apko.file(path="/usr/bin/apko"))
             .with_entrypoint(["/bin/apko"])
         )
@@ -51,7 +52,7 @@ class Docker:
         async def apko_(arch: str = "host"):
             container: dagger.Container
             output_tar = "/home/nonroot/image.tar"
-            cmd = ["build", "--arch", arch, config, "image:latest", output_tar]
+            cmd = ["build", "--arch", arch, os.path.basename(config), "image:latest", output_tar]
             tarball = await builder.with_exec(cmd).file(path=output_tar)
             if arch == "host":
                 container = dag.container()

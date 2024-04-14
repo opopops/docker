@@ -1,0 +1,19 @@
+include: ../../apko.yaml
+
+contents:
+  packages:
+    - bash
+    - busybox
+    - ca-certificates-bundle
+    - curl
+    - jq
+    - nano
+    - tree
+    - tzdata
+    - unzip
+    - vim
+    - wolfi-baselayout
+    - yq
+
+entrypoint:
+  command: bash -c

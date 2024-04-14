@@ -1,0 +1,15 @@
+include: ../../apko.yaml
+
+contents:
+  packages:
+    - ca-certificates-bundle
+    - openvpn
+    - wolfi-baselayout
+    - wolfi-keys
+
+entrypoint:
+  type: service-bundle
+  services:
+    openvpn: openvpn --config /etc/openvpn/client.conf
+
+stop-signal: SIGQUIT

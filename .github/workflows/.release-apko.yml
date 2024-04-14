@@ -14,7 +14,7 @@ on:
       target:
         type: string
         required: false
-        default: "apko"
+        default: "base"
       tag:
         type: string
         required: false
@@ -22,7 +22,7 @@ on:
       arch:
         type: string
         required: false
-        default: "x86_64,arm64"
+        default: "x86_64,aarch64"
       scan:
         type: boolean
         required: false
@@ -60,8 +60,8 @@ jobs:
           verb: call
           args: |
             apko \
-            --context="${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}/apko" \
-            --config="${{ inputs.target }}.yaml" \
+            --context="${DOCKER_REGISTRY_USERNAME}" \
+            --config="${{ github.workflow }}/apko/${{ inputs.target }}.yaml" \
             --arch="${{ inputs.arch }}" \
             publish \
             --address="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \

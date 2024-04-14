@@ -5,20 +5,6 @@ contents:
   repositories:
     - https://packages.wolfi.dev/os
     - https://packages.cgr.dev/extras
-  packages:
-    - bash
-    - busybox
-    - ca-certificates-bundle
-    - curl
-    - jq
-    - nano
-    - tree
-    - tzdata
-    - unzip
-    - vim
-    - wolfi-baselayout
-    - wolfi-keys
-    - yq
 
 annotations:
   image-author: opopops
@@ -36,9 +22,6 @@ accounts:
 
 work-dir: /home/nonroot
 
-entrypoint:
-  command: bash -c
-
 archs:
   - x86_64
-  - arm64
+  - aarch64

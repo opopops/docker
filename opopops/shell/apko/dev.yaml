@@ -1,6 +1,7 @@
-include: apko.yaml
+include: base.yaml
 
 contents:
   packages:
+    - build-base
     - git
     - wolfi-base
