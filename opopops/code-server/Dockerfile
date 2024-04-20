@@ -61,7 +61,7 @@ USER nonroot
 FROM base as helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.14.3"
+ARG HELM_VERSION="v3.14.4"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -72,7 +72,7 @@ USER nonroot
 FROM base as terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.7.5"
+ARG TERRAFORM_VERSION="1.8.1"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
 RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip | \
     gunzip -c - > /bin/terraform && \
@@ -94,7 +94,7 @@ USER nonroot
 FROM base as vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.15.6"
+ARG VAULT_VERSION="1.16.1"
 ENV VAULT_VERSION $VAULT_VERSION
 RUN curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip | \
     gunzip -c - > /bin/vault && \
@@ -132,7 +132,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
     unzip
 
 # --- Install docker
-ARG DOCKER_VERSION="25.0.6"
+ARG DOCKER_VERSION="26.0.1"
 ENV DOCKER_VERSION $DOCKER_VERSION
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
