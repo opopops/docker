@@ -36,6 +36,17 @@ RUN curl -fsL --output /bin/yq \
 
 USER nonroot
 
+FROM base as powerline-go
+
+# --- Install yq CLI
+ARG POWERLINEGO_VERSION="v1.24"
+ENV POWERLINEGO_VERSION $POWERLINEGO_VERSION
+RUN curl -fsL --output /bin/powerline-go \
+    https://github.com/justjanne/powerline-go/releases/download/${POWERLINEGO_VERSION}/powerline-go-${TARGETOS}-${TARGETARCH} && \
+    chmod 755 /bin/powerline-go
+
+USER nonroot
+
 FROM base as kubectl
 
 # --- Install kubectl CLI
@@ -120,16 +131,20 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
     bash \
     ca-certificates \
     curl \
+    dnsutils \
     git \
     gnupg \
-    jq \
     lsb-release \
+    nano \
     openssh-client \
     pigz \
     python3-pip \
     python3-venv \
     rsync \
-    unzip
+    unzip \
+    vim
+
+ENV EDITOR=vi
 
 # --- Install docker
 ARG DOCKER_VERSION="26.0.2"
@@ -160,6 +175,7 @@ RUN groupadd -g 996 docker && \
 # --- Install binaries
 COPY --from=jq --link /bin/jq /usr/local/bin/jq
 COPY --from=yq --link /bin/yq /usr/local/bin/yq
+COPY --from=powerline-go --link /bin/powerline-go /usr/local/bin/powerline-go
 COPY --from=kubectl --link /bin/kubectl /usr/local/bin/kubectl
 COPY --from=k9s --link /bin/k9s /usr/local/bin/k9s
 COPY --from=helm --link /bin/helm /usr/local/bin/helm
@@ -185,3 +201,18 @@ RUN --mount=type=cache,target=/config/.cache/pip \
     pipx install black && \
     pipx install pylint && \
     pipx install pytest
+
+# --- Update bashrc
+RUN cat <<EOF >> /config/.bashrc
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+function _update_ps1() {
+    PS1="\$(/usr/local/bin/powerline-go -mode flat -hostname-only-if-ssh -cwd-max-depth 3 -modules cwd,git,terraform-workspace,kube -error \$? -jobs \$(jobs -p | wc -l))"
+}
+
+if [ "\$TERM" != "linux" ] && [ -f "/usr/local/bin/powerline-go" ]; then
+    PROMPT_COMMAND="_update_ps1; \$PROMPT_COMMAND"
+fi
+EOF
