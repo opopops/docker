@@ -5,3 +5,8 @@ contents:
     - build-base
     - git
     - wolfi-base
+
+accounts:
+  run-as: root
+
+work-dir: /
