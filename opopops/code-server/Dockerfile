@@ -105,7 +105,7 @@ USER nonroot
 FROM base as vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.16.1"
+ARG VAULT_VERSION="1.16.2"
 ENV VAULT_VERSION $VAULT_VERSION
 RUN curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip | \
     gunzip -c - > /bin/vault && \
@@ -147,7 +147,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
 ENV EDITOR=vi
 
 # --- Install docker
-ARG DOCKER_VERSION="26.0.2"
+ARG DOCKER_VERSION="26.1.0"
 ENV DOCKER_VERSION $DOCKER_VERSION
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
