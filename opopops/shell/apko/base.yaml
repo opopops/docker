@@ -3,16 +3,12 @@ include: ../../apko.yaml
 contents:
   packages:
     - bash
-    - bind-tools
     - busybox
     - ca-certificates-bundle
     - curl
     - jq
-    - nano
-    - tree
     - tzdata
     - unzip
-    - vim
     - wolfi-baselayout
     - yq
 

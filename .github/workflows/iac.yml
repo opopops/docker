@@ -1,11 +1,11 @@
-name: k8s
+name: iac
 
 on:
   push:
     branches:
       - "main"
     paths:
-      - "opopops/k8s/**"
+      - "opopops/iac/**"
   workflow_dispatch:
 
 jobs:

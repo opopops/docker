@@ -2,11 +2,14 @@ include: base.yaml
 
 contents:
   packages:
-    - build-base
+    - bind-tools
     - git
+    - nano
+    - tree
+    - vim
     - wolfi-base
 
-accounts:
-  run-as: root
+# accounts:
+#   run-as: root
 
-work-dir: /
+# work-dir: /
