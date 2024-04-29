@@ -111,7 +111,7 @@ FROM base as doctl
 # --- Install doctl CLI
 ARG DOCTL_VERSION="1.105.0"
 ENV DOCTL_VERSION $DOCTL_VERSION
-RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
+RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin doctl && \
     chmod 755 /bin/doctl
 
@@ -141,7 +141,7 @@ RUN apk add --no-cache \
     grype \
     jq \
     nano \
-    python3.12 \
+    python-3.12 \
     py3.12-pip \
     tzdata \
     vim \
