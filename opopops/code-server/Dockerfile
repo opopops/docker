@@ -117,6 +117,17 @@ RUN curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAU
 
 USER nonroot
 
+FROM base as dagger
+
+# --- Install dagger CLI
+ARG DAGGER_VERSION="0.11.2"
+ENV DAGGER_VERSION $DAGGER_VERSION
+RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
+    tar xvzf - -C /bin dagger && \
+    chmod 755 /bin/dagger
+
+USER nonroot
+
 FROM lscr.io/linuxserver/code-server:${CODE_SERVER_VERSION}
 
 ARG TARGETOS
@@ -186,6 +197,7 @@ COPY --from=helm --link /bin/helm /usr/local/bin/helm
 COPY --from=terraform --link /bin/terraform /usr/local/bin/terraform
 COPY --from=tofu --link /bin/tofu /usr/local/bin/tofu
 COPY --from=vault --link /bin/vault /usr/local/bin/vault
+COPY --from=dagger --link /bin/dagger /usr/local/bin/dagger
 
 # --- Install pipx
 ARG PIPX_BIN_DIR=/usr/local/bin
