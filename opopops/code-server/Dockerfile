@@ -83,18 +83,22 @@ USER nonroot
 FROM base as terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.8.1"
+ARG TERRAFORM_VERSION="1.8.2"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
-RUN curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip | \
-    gunzip -c - > /bin/terraform && \
-    chmod 755 /bin/terraform
+RUN TEMP_DIR=$(mktemp -d) && \
+    curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
+        -o ${TEMP_DIR}/terraform.zip && \
+    unzip -d $TEMP_DIR ${TEMP_DIR}/terraform.zip  && \
+    mv ${TEMP_DIR}/terraform /bin/terraform && \
+    chmod 755 /bin/terraform && \
+    rm -rf ${TEMP_DIR}
 
 USER nonroot
 
 FROM base as tofu
 
 # --- Install tofu CLI
-ARG TOFU_VERSION="1.7.0-alpha1"
+ARG TOFU_VERSION="1.7.0-rc1"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin tofu && \
