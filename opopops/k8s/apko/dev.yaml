@@ -9,7 +9,7 @@ contents:
     - vim
     - wolfi-base
 
-# accounts:
-#   run-as: root
+accounts:
+  run-as: root
 
-# work-dir: /
+work-dir: /

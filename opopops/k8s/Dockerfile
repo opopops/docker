@@ -58,7 +58,7 @@ RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFIL
 
 USER nonroot
 
-FROM chainguard/bash:${WOLFI_VERSION}
+FROM chainguard/wolfi-base:${WOLFI_VERSION}
 
 LABEL org.opencontainers.image.authors="opopops"
 
