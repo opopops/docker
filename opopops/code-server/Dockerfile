@@ -28,7 +28,7 @@ USER nonroot
 FROM base as yq
 
 # --- Install yq CLI
-ARG YQ_VERSION="v4.43.1"
+ARG YQ_VERSION="v4.44.1"
 ENV YQ_VERSION $YQ_VERSION
 RUN curl -fsL --output /bin/yq \
     https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_${TARGETOS}_${TARGETARCH} && \
@@ -50,7 +50,7 @@ USER nonroot
 FROM base as kubectl
 
 # --- Install kubectl CLI
-ARG KUBECTL_VERSION="v1.28.8"
+ARG KUBECTL_VERSION="v1.29.4"
 ENV KUBECTL_VERSION $KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
     -o /bin/kubectl && \
@@ -72,7 +72,7 @@ USER nonroot
 FROM base as helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.14.4"
+ARG HELM_VERSION="v3.15.1"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -83,7 +83,7 @@ USER nonroot
 FROM base as helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.163.1"
+ARG HELMFILE_VERSION="0.164.0"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin helmfile && \
@@ -94,7 +94,7 @@ USER nonroot
 FROM base as grype
 
 # --- Install grype CLI
-ARG GRYPE_VERSION="0.77.1"
+ARG GRYPE_VERSION="0.77.4"
 ENV GRYPE_VERSION $GRYPE_VERSION
 RUN curl -fsSL https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin grype && \
@@ -116,7 +116,7 @@ USER nonroot
 FROM base as terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.8.3"
+ARG TERRAFORM_VERSION="1.8.4"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base as terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.58.3"
+ARG TERRAGRUNT_VERSION="0.58.10"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /bin/terragrunt && \
@@ -206,7 +206,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
 ENV EDITOR=vi
 
 # --- Install docker
-ARG DOCKER_VERSION="26.1.1"
+ARG DOCKER_VERSION="26.1.3"
 ENV DOCKER_VERSION $DOCKER_VERSION
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
