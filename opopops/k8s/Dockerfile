@@ -17,7 +17,7 @@ RUN apk add --no-cache \
 FROM base as kubectl
 
 # --- Install kubectl CLI
-ARG KUBECTL_VERSION="v1.28.8"
+ARG KUBECTL_VERSION="v1.29.4"
 ENV KUBECTL_VERSION $KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
     -o /bin/kubectl && \
@@ -39,7 +39,7 @@ USER nonroot
 FROM base as helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.14.4"
+ARG HELM_VERSION="v3.15.1"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -50,7 +50,7 @@ USER nonroot
 FROM base as helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.163.1"
+ARG HELMFILE_VERSION="0.164.0"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin helmfile && \

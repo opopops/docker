@@ -17,7 +17,7 @@ RUN apk add --no-cache \
 FROM base as kubectl
 
 # --- Install kubectl CLI
-ARG KUBECTL_VERSION="v1.28.8"
+ARG KUBECTL_VERSION="v1.29.4"
 ENV KUBECTL_VERSION $KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
     -o /bin/kubectl && \
@@ -39,7 +39,7 @@ USER nonroot
 FROM base as helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.14.4"
+ARG HELM_VERSION="v3.15.1"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -50,7 +50,7 @@ USER nonroot
 FROM base as helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.163.1"
+ARG HELMFILE_VERSION="0.164.0"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin helmfile && \
@@ -61,7 +61,7 @@ USER nonroot
 FROM base as terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.8.2"
+ARG TERRAFORM_VERSION="1.8.4"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -76,7 +76,7 @@ USER nonroot
 FROM base as tofu
 
 # --- Install tofu CLI
-ARG TOFU_VERSION="1.7.0-rc1"
+ARG TOFU_VERSION="1.7.1"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin tofu && \
@@ -87,7 +87,7 @@ USER nonroot
 FROM base as terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.57.13"
+ARG TERRAGRUNT_VERSION="0.58.13"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /bin/terragrunt && \
@@ -109,7 +109,7 @@ USER nonroot
 FROM base as doctl
 
 # --- Install doctl CLI
-ARG DOCTL_VERSION="1.105.0"
+ARG DOCTL_VERSION="1.107.0"
 ENV DOCTL_VERSION $DOCTL_VERSION
 RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin doctl && \
@@ -120,7 +120,7 @@ USER nonroot
 FROM base as dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.11.2"
+ARG DAGGER_VERSION="0.11.6"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin dagger && \
