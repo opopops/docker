@@ -17,7 +17,7 @@ RUN apk add --no-cache \
 FROM base as kubectl
 
 # --- Install kubectl CLI
-ARG KUBECTL_VERSION="v1.29.4"
+ARG KUBECTL_VERSION="v1.29.5"
 ENV KUBECTL_VERSION $KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
     -o /bin/kubectl && \
