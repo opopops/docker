@@ -45,7 +45,7 @@ jobs:
       digest: ${{ steps.digest.outputs.digest }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build Docker image
         uses: dagger/dagger-for-github@v5
         env:
@@ -79,7 +79,7 @@ jobs:
     if: ${{ inputs.scan }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Scan Docker image
         uses: dagger/dagger-for-github@v5
         env:
@@ -105,7 +105,7 @@ jobs:
     if: ${{ inputs.sign }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Sign Docker image
         uses: dagger/dagger-for-github@v5
         env:
