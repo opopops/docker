@@ -164,7 +164,7 @@ USER nonroot
 FROM base as dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.11.6"
+ARG DAGGER_VERSION="0.11.7"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin dagger && \
