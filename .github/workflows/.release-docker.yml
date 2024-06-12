@@ -3,14 +3,6 @@ name: release-docker
 on:
   workflow_call:
     inputs:
-      dagger-version:
-        type: string
-        required: false
-        default: "0.11.7"
-      dagger-module:
-        type: string
-        required: false
-        default: "."
       target:
         type: string
         required: false
@@ -36,6 +28,10 @@ on:
         required: false
         default: true
 
+env:
+  DAGGGER_VERSION: "0.11.7"
+  DAGGER_MODULE: "."
+
 jobs:
   build:
     name: build
@@ -45,7 +41,7 @@ jobs:
       digest: ${{ steps.digest.outputs.digest }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build Docker image
         uses: dagger/dagger-for-github@v5
         env:
@@ -53,10 +49,10 @@ jobs:
           DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         with:
-          version: ${{ inputs.dagger-version }}
+          version: ${{ env.DAGGGER_VERSION }}
           cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
           engine-stop: false
-          module: ${{ inputs.dagger-module }}
+          module: ${{ env.DAGGER_MODULE }}
           verb: call
           args: |
             build \

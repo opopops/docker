@@ -1,0 +1,133 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended",
+        ":dependencyDashboard"
+    ],
+    "enabledManagers": ["dockerfile", "custom.regex"],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "sigstore/cosign",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG COSIGN_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "dagger/dagger",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^\\.github/\\.release-apko\\.yaml$",
+                "^\\.github/\\.release-docker\\.yaml$",
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "DAGGER_VERSION: \"(?<currentValue>.*?)\"\\n",
+                "ARG DAGGER_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "anchore/grype",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG GRYPE_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "helm/helm",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG HELM_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "helmfile/helmfile",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG HELMFILE_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "derailed/k9s",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG K9S_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "hashicorp/terraform",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG TERRAFORM_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "gruntwork-io/terragrunt",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG TERRAGRUNT_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "opentofu/opentofu",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG TOFU_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "hashicorp/vault",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG VAULT_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        }
+    ]
+}
