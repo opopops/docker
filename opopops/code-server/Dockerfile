@@ -83,7 +83,7 @@ USER nonroot
 FROM base as helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.164.0"
+ARG HELMFILE_VERSION="0.165.0"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin helmfile && \
