@@ -98,7 +98,7 @@ USER nonroot
 FROM base as vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.16.2"
+ARG VAULT_VERSION="1.17.0"
 ENV VAULT_VERSION $VAULT_VERSION
 RUN curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip | \
     gunzip -c - > /bin/vault && \
