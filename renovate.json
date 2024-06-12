@@ -4,12 +4,21 @@
         "config:recommended",
         ":dependencyDashboard"
     ],
-    "enabledManagers": ["dockerfile", "custom.regex"],
+    "enabledManagers": [
+        "dockerfile",
+        "custom.regex"
+    ],
     "packageRules": [
         {
-        "groupName": "all dependencies",
-        "groupSlug": "all",
-        "matchPackagePatterns": ["*"]
+            "groupName": "all dependencies",
+            "groupSlug": "all",
+            "matchUpdateTypes": [
+                "minor",
+                "patch"
+            ],
+            "matchPackagePatterns": [
+                "*"
+            ]
         }
     ],
     "customManagers": [
@@ -40,6 +49,31 @@
                 "\"engineVersion\": \"(?<currentValue>.*?)\"",
                 "DAGGER_VERSION: \"(?<currentValue>.*?)\"\\n",
                 "ARG DAGGER_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "docker/cli",
+            "versioningTemplate": "semver",
+            "extractVersionTemplate": "^v?(?<version>.*)$",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG DOCKER_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "digitalocean/doctl",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^opopops\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG DOCTL_VERSION=\"(?<currentValue>.*?)\"\\n"
             ]
         },
         {
