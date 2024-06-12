@@ -100,9 +100,13 @@ FROM base as vault
 # --- Install vault CLI
 ARG VAULT_VERSION="1.17.0"
 ENV VAULT_VERSION $VAULT_VERSION
-RUN curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip | \
-    gunzip -c - > /bin/vault && \
-    chmod 755 /bin/vault
+RUN TEMP_DIR=$(mktemp -d) && \
+    curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
+    -o ${TEMP_DIR}/vault.zip && \
+    unzip -d $TEMP_DIR ${TEMP_DIR}/vault.zip  && \
+    mv ${TEMP_DIR}/vault /bin/vault && \
+    chmod 755 /bin/vault && \
+    rm -rf ${TEMP_DIR}
 
 USER nonroot
 
