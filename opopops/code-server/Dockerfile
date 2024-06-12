@@ -94,7 +94,7 @@ USER nonroot
 FROM base as grype
 
 # --- Install grype CLI
-ARG GRYPE_VERSION="0.77.4"
+ARG GRYPE_VERSION="0.78.0"
 ENV GRYPE_VERSION $GRYPE_VERSION
 RUN curl -fsSL https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin grype && \
@@ -153,7 +153,7 @@ USER nonroot
 FROM base as vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.16.2"
+ARG VAULT_VERSION="1.17.0"
 ENV VAULT_VERSION $VAULT_VERSION
 RUN curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip | \
     gunzip -c - > /bin/vault && \
