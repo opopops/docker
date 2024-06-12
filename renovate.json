@@ -5,6 +5,13 @@
         ":dependencyDashboard"
     ],
     "enabledManagers": ["dockerfile", "custom.regex"],
+    "packageRules": [
+        {
+        "groupName": "all dependencies",
+        "groupSlug": "all",
+        "matchPackagePatterns": ["*"]
+        }
+    ],
     "customManagers": [
         {
             "customType": "regex",
