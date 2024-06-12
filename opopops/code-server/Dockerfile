@@ -206,7 +206,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
 ENV EDITOR=vi
 
 # --- Install docker
-ARG DOCKER_VERSION="26.1.3"
+ARG DOCKER_VERSION="26.1.4"
 ENV DOCKER_VERSION $DOCKER_VERSION
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
