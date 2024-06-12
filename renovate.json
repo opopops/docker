@@ -24,11 +24,13 @@
             "depNameTemplate": "dagger/dagger",
             "versioningTemplate": "semver",
             "fileMatch": [
+                "^dagger.json$",
                 "^\\.github/\\.release-apko\\.yaml$",
                 "^\\.github/\\.release-docker\\.yaml$",
                 "^opopops\\/.+\\/Dockerfile$"
             ],
             "matchStrings": [
+                "\"engineVersion\": \"(?<currentValue>.*?)\"",
                 "DAGGER_VERSION: \"(?<currentValue>.*?)\"\\n",
                 "ARG DAGGER_VERSION=\"(?<currentValue>.*?)\"\\n"
             ]
