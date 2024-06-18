@@ -30,7 +30,7 @@ on:
 
 env:
   DAGGER_MODULE: "."
-  DAGGGER_VERSION: "0.11.7"
+  DAGGER_VERSION: "0.11.8"
 
 jobs:
   build:
@@ -49,7 +49,7 @@ jobs:
           DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
         with:
-          version: ${{ env.DAGGGER_VERSION }}
+          version: ${{ env.DAGGER_VERSION }}
           cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
           engine-stop: false
           module: ${{ env.DAGGER_MODULE }}
