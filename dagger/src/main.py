@@ -1,10 +1,9 @@
 """Build, publish, scan and sign Docker images."""
 
-from typing import Annotated, Self
-
-import os
-import logging
 import asyncio
+import logging
+import os
+from typing import Annotated, Self
 
 import dagger
 from dagger import Arg, Doc, dag, field, function, object_type
@@ -125,9 +124,7 @@ class Docker:
         fail_on: (
             Annotated[
                 str,
-                Doc(
-                    "Set the return code to 1 if a vulnerability is found with a severity >= the given severity"
-                ),
+                Doc("Set the return code to 1 if a vulnerability is found with a severity >= the given severity"),
             ]
             | None
         ) = None,
@@ -166,10 +163,7 @@ class Docker:
     async def export(
         self,
         platform_variants: (
-            Annotated[
-                list[dagger.Container], Doc("Identifiers for other platform specific containers.")
-            ]
-            | None
+            Annotated[list[dagger.Container], Doc("Identifiers for other platform specific containers.")] | None
         ) = None,
         compress: Annotated[bool, Doc("Enable compression.")] | None = False,
     ) -> dagger.File:
@@ -179,19 +173,14 @@ class Docker:
         forced_compression = dagger.ImageLayerCompression("Uncompressed")
         if compress:
             forced_compression = dagger.ImageLayerCompression("Gzip")
-        return dag.container().as_tarball(
-            forced_compression=forced_compression, platform_variants=platform_variants
-        )
+        return dag.container().as_tarball(forced_compression=forced_compression, platform_variants=platform_variants)
 
     @function
     async def publish(
         self,
         addresses: Annotated[tuple[str, ...], Arg(name="address")],
         platform_variants: (
-            Annotated[
-                list[dagger.Container], Doc("Identifiers for other platform specific containers.")
-            ]
-            | None
+            Annotated[list[dagger.Container], Doc("Identifiers for other platform specific containers.")] | None
         ) = None,
         username: Annotated[str, Doc("Registry username.")] | None = None,
         password: Annotated[dagger.Secret, Doc("Registry password.")] | None = None,
@@ -205,9 +194,7 @@ class Docker:
         for address in addresses:
             container = dag.container()
             if username and password:
-                container = container.with_registry_auth(
-                    address=address, username=username, secret=password
-                )
+                container = container.with_registry_auth(address=address, username=username, secret=password)
             digest_ = await container.publish(address=address, platform_variants=platform_variants)
             if not digest:
                 digest = digest_
@@ -254,8 +241,6 @@ class Docker:
         )
 
         if docker_config:
-            container = container.with_mounted_file(
-                "/home/nonroot/.docker/config.json", docker_config, owner=user
-            )
+            container = container.with_mounted_file("/home/nonroot/.docker/config.json", docker_config, owner=user)
 
         return await container.stdout()
