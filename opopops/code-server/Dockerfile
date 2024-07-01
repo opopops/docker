@@ -142,7 +142,7 @@ USER nonroot
 FROM base as terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.59.5"
+ARG TERRAGRUNT_VERSION="0.59.6"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /bin/terragrunt && \
@@ -210,7 +210,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
 ENV EDITOR=vi
 
 # --- Install docker
-ARG DOCKER_VERSION="27.0.2"
+ARG DOCKER_VERSION="27.0.3"
 ENV DOCKER_VERSION $DOCKER_VERSION
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
