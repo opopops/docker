@@ -41,8 +41,8 @@
             "versioningTemplate": "semver",
             "fileMatch": [
                 "^dagger.json$",
-                "^\\.github/\\.release-apko\\.yaml$",
-                "^\\.github/\\.release-docker\\.yaml$",
+                "^\\.github\\/workflows\\/\\.release-apko\\.yaml$",
+                "^\\.github\\/workflows\\/\\.release-docker\\.yaml$",
                 "^opopops\\/.+\\/Dockerfile$"
             ],
             "matchStrings": [
