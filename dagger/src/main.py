@@ -155,7 +155,7 @@ class Docker:
                 owner=user,
             )
             .with_file(path=image_tar, source=container.as_tarball(), owner=user)
-            .with_exec(cmd)
+            .with_exec(cmd, use_entrypoint=True)
             .stdout()
         )
 
@@ -237,7 +237,7 @@ class Docker:
             .with_env_variable("COSIGN_YES", "true")
             .with_secret_variable("COSIGN_PASSWORD", password)
             .with_secret_variable("COSIGN_PRIVATE_KEY", private_key)
-            .with_exec(cmd)
+            .with_exec(cmd, use_entrypoint=True)
         )
 
         if docker_config:

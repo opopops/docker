@@ -76,5 +76,5 @@ dagger -m github.com/opopops/docker@main \
 
 ```shell
 dagger -m github.com/opopops/docker@main \
-  call --container=alpine:latest scan-report
+  call --container=alpine:latest scan
 ```
