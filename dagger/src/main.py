@@ -38,11 +38,18 @@ class Docker:
         """Build multi-platform image using Chainguard apko tool (apk-based OCI image builder)."""
         platform_variants: list[dagger.Container] = []
         apko = dag.container().from_(image)
+        cache_dir: str = "/home/nonroot/.apko/cache"
         builder = (
             dag.container()
             .from_("chainguard/bash:latest")
             .with_user("nonroot")
             .with_mounted_directory(path="/work", source=context, owner="nonroot")
+            .with_mounted_cache(
+                cache_dir,
+                dag.cache_volume("APKO_CACHE"),
+                sharing=dagger.CacheSharingMode("LOCKED"),
+                owner=user,
+            )
             .with_workdir(f"/work/{os.path.dirname(config)}")
             .with_file(path="/bin/apko", source=apko.file(path="/usr/bin/apko"))
             .with_entrypoint(["/bin/apko"])
@@ -51,7 +58,16 @@ class Docker:
         async def apko_(arch: str = "host"):
             container: dagger.Container
             output_tar = "/home/nonroot/image.tar"
-            cmd = ["build", "--arch", arch, os.path.basename(config), "image:latest", output_tar]
+            cmd = [
+                "build",
+                "--arch",
+                arch,
+                "--cache-dir",
+                cache_dir,
+                os.path.basename(config),
+                "image:latest",
+                output_tar,
+            ]
             tarball = await builder.with_exec(cmd).file(path=output_tar)
             if arch == "host":
                 container = dag.container()
@@ -124,7 +140,9 @@ class Docker:
         fail_on: (
             Annotated[
                 str,
-                Doc("Set the return code to 1 if a vulnerability is found with a severity >= the given severity"),
+                Doc(
+                    "Set the return code to 1 if a vulnerability is found with a severity >= the given severity"
+                ),
             ]
             | None
         ) = None,
@@ -163,7 +181,10 @@ class Docker:
     async def export(
         self,
         platform_variants: (
-            Annotated[list[dagger.Container], Doc("Identifiers for other platform specific containers.")] | None
+            Annotated[
+                list[dagger.Container], Doc("Identifiers for other platform specific containers.")
+            ]
+            | None
         ) = None,
         compress: Annotated[bool, Doc("Enable compression.")] | None = False,
     ) -> dagger.File:
@@ -173,14 +194,19 @@ class Docker:
         forced_compression = dagger.ImageLayerCompression("Uncompressed")
         if compress:
             forced_compression = dagger.ImageLayerCompression("Gzip")
-        return dag.container().as_tarball(forced_compression=forced_compression, platform_variants=platform_variants)
+        return dag.container().as_tarball(
+            forced_compression=forced_compression, platform_variants=platform_variants
+        )
 
     @function
     async def publish(
         self,
         addresses: Annotated[tuple[str, ...], Arg(name="address")],
         platform_variants: (
-            Annotated[list[dagger.Container], Doc("Identifiers for other platform specific containers.")] | None
+            Annotated[
+                list[dagger.Container], Doc("Identifiers for other platform specific containers.")
+            ]
+            | None
         ) = None,
         username: Annotated[str, Doc("Registry username.")] | None = None,
         password: Annotated[dagger.Secret, Doc("Registry password.")] | None = None,
@@ -194,7 +220,9 @@ class Docker:
         for address in addresses:
             container = dag.container()
             if username and password:
-                container = container.with_registry_auth(address=address, username=username, secret=password)
+                container = container.with_registry_auth(
+                    address=address, username=username, secret=password
+                )
             digest_ = await container.publish(address=address, platform_variants=platform_variants)
             if not digest:
                 digest = digest_
@@ -241,6 +269,8 @@ class Docker:
         )
 
         if docker_config:
-            container = container.with_mounted_file("/home/nonroot/.docker/config.json", docker_config, owner=user)
+            container = container.with_mounted_file(
+                "/home/nonroot/.docker/config.json", docker_config, owner=user
+            )
 
         return await container.stdout()
