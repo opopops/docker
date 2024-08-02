@@ -30,7 +30,7 @@ on:
 
 env:
   DAGGER_MODULE: "."
-  DAGGER_VERSION: "0.12.3"
+  DAGGER_VERSION: "0.12.4"
 
 jobs:
   build:
