@@ -260,7 +260,7 @@ RUN --mount=type=cache,target=/config/.cache/pip \
     mkdir -p \
     ${PIPX_BIN_DIR} \
     ${PIPX_HOME} && \
-    python3 -m pip install pipx
+    python3 -m pip install --break-system-packages pipx
 
 # --- Install python packages
 RUN --mount=type=cache,target=/config/.cache/pip \
