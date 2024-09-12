@@ -39,7 +39,7 @@ USER nonroot
 FROM base as helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.15.4"
+ARG HELM_VERSION="v3.16.1"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -50,7 +50,7 @@ USER nonroot
 FROM base as helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.167.1"
+ARG HELMFILE_VERSION="0.168.0"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin helmfile && \
@@ -76,7 +76,7 @@ USER nonroot
 FROM base as tofu
 
 # --- Install tofu CLI
-ARG TOFU_VERSION="1.8.1"
+ARG TOFU_VERSION="1.8.2"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin tofu && \
@@ -87,7 +87,7 @@ USER nonroot
 FROM base as terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.67.1"
+ARG TERRAGRUNT_VERSION="0.67.4"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /bin/terragrunt && \
@@ -113,7 +113,7 @@ USER nonroot
 FROM base as doctl
 
 # --- Install doctl CLI
-ARG DOCTL_VERSION="1.111.0"
+ARG DOCTL_VERSION="1.113.0"
 ENV DOCTL_VERSION $DOCTL_VERSION
 RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin doctl && \
@@ -124,7 +124,7 @@ USER nonroot
 FROM base as dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.12.7"
+ARG DAGGER_VERSION="0.13.0"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin dagger && \
