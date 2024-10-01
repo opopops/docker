@@ -29,7 +29,7 @@ on:
         default: true
 
 env:
-  DAGGER_VERSION: "0.13.2"
+  DAGGER_VERSION: "0.13.3"
   DAGGER_MODULE: "."
 
 jobs:
