@@ -39,7 +39,7 @@ USER 65532
 FROM base as helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.16.1"
+ARG HELM_VERSION="v3.16.2"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -50,7 +50,7 @@ USER 65532
 FROM base as helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.168.0"
+ARG HELMFILE_VERSION="0.169.0"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin helmfile && \
@@ -61,7 +61,7 @@ USER 65532
 FROM base as terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.9.6"
+ARG TERRAFORM_VERSION="1.9.7"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -76,7 +76,7 @@ USER 65532
 FROM base as tofu
 
 # --- Install tofu CLI
-ARG TOFU_VERSION="1.8.2"
+ARG TOFU_VERSION="1.8.3"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin tofu && \
@@ -87,7 +87,7 @@ USER 65532
 FROM base as terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.67.15"
+ARG TERRAGRUNT_VERSION="0.68.2"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /bin/terragrunt && \
@@ -98,7 +98,7 @@ USER 65532
 FROM base as vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.17.6"
+ARG VAULT_VERSION="1.18.0"
 ENV VAULT_VERSION $VAULT_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -124,7 +124,7 @@ USER 65532
 FROM base as dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.13.3"
+ARG DAGGER_VERSION="0.13.5"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /bin dagger && \
