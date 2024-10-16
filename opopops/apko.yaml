@@ -18,7 +18,7 @@ accounts:
     - username: nonroot
       uid: 65532
       gid: 65532
-  run-as: nonroot
+  run-as: 0
 
 work-dir: /home/nonroot
 

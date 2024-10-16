@@ -23,7 +23,7 @@ RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TA
     -o /bin/kubectl && \
     chmod 755 /bin/kubectl
 
-USER nonroot
+USER 65532
 
 FROM base as k9s
 
@@ -34,7 +34,7 @@ RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/
     tar xvzf - -C /bin k9s && \
     chmod 755 /bin/k9s
 
-USER nonroot
+USER 65532
 
 FROM base as helm
 
@@ -45,7 +45,7 @@ RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH
     tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
     chmod 755 /bin/helm
 
-USER nonroot
+USER 65532
 
 FROM base as helmfile
 
@@ -56,7 +56,7 @@ RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFIL
     tar xvzf - -C /bin helmfile && \
     chmod 755 /bin/helmfile
 
-USER nonroot
+USER 65532
 
 FROM chainguard/wolfi-base:${WOLFI_VERSION}
 
@@ -82,4 +82,4 @@ COPY --link --from=helmfile /bin/helmfile /usr/local/bin/helmfile
 COPY --link --from=k9s /bin/k9s /usr/local/bin/k9s
 COPY --link --from=kubectl /bin/kubectl /usr/local/bin/kubectl
 
-USER nonroot
+USER 65532

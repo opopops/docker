@@ -10,6 +10,6 @@ contents:
     - wolfi-base
 
 accounts:
-  run-as: root
+  run-as: 0
 
 work-dir: /

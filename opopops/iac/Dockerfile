@@ -23,7 +23,7 @@ RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TA
     -o /bin/kubectl && \
     chmod 755 /bin/kubectl
 
-USER nonroot
+USER 65532
 
 FROM base as k9s
 
@@ -34,7 +34,7 @@ RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/
     tar xvzf - -C /bin k9s && \
     chmod 755 /bin/k9s
 
-USER nonroot
+USER 65532
 
 FROM base as helm
 
@@ -45,7 +45,7 @@ RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH
     tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
     chmod 755 /bin/helm
 
-USER nonroot
+USER 65532
 
 FROM base as helmfile
 
@@ -56,7 +56,7 @@ RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFIL
     tar xvzf - -C /bin helmfile && \
     chmod 755 /bin/helmfile
 
-USER nonroot
+USER 65532
 
 FROM base as terraform
 
@@ -71,7 +71,7 @@ RUN TEMP_DIR=$(mktemp -d) && \
     chmod 755 /bin/terraform && \
     rm -rf ${TEMP_DIR}
 
-USER nonroot
+USER 65532
 
 FROM base as tofu
 
@@ -82,7 +82,7 @@ RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VE
     tar xvzf - -C /bin tofu && \
     chmod 755 /bin/tofu
 
-USER nonroot
+USER 65532
 
 FROM base as terragrunt
 
@@ -93,7 +93,7 @@ RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${T
     -o /bin/terragrunt && \
     chmod 755 /bin/terragrunt
 
-USER nonroot
+USER 65532
 
 FROM base as vault
 
@@ -108,7 +108,7 @@ RUN TEMP_DIR=$(mktemp -d) && \
     chmod 755 /bin/vault && \
     rm -rf ${TEMP_DIR}
 
-USER nonroot
+USER 65532
 
 FROM base as doctl
 
@@ -119,7 +119,7 @@ RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_
     tar xvzf - -C /bin doctl && \
     chmod 755 /bin/doctl
 
-USER nonroot
+USER 65532
 
 FROM base as dagger
 
@@ -180,4 +180,4 @@ RUN --mount=type=cache,target=/config/.cache/pip \
     pipx install --include-deps ansible && \
     pipx install ansible-lint
 
-USER nonroot
+USER 65532
