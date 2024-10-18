@@ -75,9 +75,9 @@ jobs:
     if: ${{ inputs.scan }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Scan Docker image
-        uses: dagger/dagger-for-github@v5
+        uses: dagger/dagger-for-github@v6
         env:
           DOCKER_REGISTRY_HOST: ${{ vars.DOCKER_REGISTRY_HOST }}
           DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
@@ -101,9 +101,9 @@ jobs:
     if: ${{ inputs.sign }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Sign Docker image
-        uses: dagger/dagger-for-github@v5
+        uses: dagger/dagger-for-github@v6
         env:
           DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
