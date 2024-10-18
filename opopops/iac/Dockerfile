@@ -61,7 +61,7 @@ USER 65532
 FROM base as terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.9.7"
+ARG TERRAFORM_VERSION="1.9.8"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -87,7 +87,7 @@ USER 65532
 FROM base as terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.68.2"
+ARG TERRAGRUNT_VERSION="0.68.4"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /bin/terragrunt && \
