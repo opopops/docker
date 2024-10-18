@@ -29,7 +29,7 @@ on:
         default: true
 
 env:
-  DAGGER_MODULE: "."
+  DAGGER_MODULE: "github.com/opopops/daggerverse/docker@main"
   DAGGER_VERSION: "0.13.5"
 
 jobs:
@@ -59,8 +59,9 @@ jobs:
             --context="${DOCKER_REGISTRY_USERNAME}" \
             --config="${{ github.workflow }}/apko/${{ inputs.target }}.yaml" \
             --arch="${{ inputs.arch }}" \
+            --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
             publish \
-            --address="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+            --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
             --username="${DOCKER_REGISTRY_USERNAME}" \
             --password=env:DOCKER_REGISTRY_PASSWORD \
             --output digest.txt \

@@ -2,8 +2,7 @@ FROM chainguard/wolfi-base:latest
 
 LABEL org.opencontainers.image.authors="opopops"
 
-RUN apk update && \
-    apk add --no-cache \
+RUN apk add --no-cache \
     openvpn
 
 ENV OPENVPN_CONFIG_PATH=/etc/openvpn/client.conf

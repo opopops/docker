@@ -3,7 +3,7 @@
 ARG WOLFI_VERSION="latest"
 ARG CODE_SERVER_VERSION="latest"
 
-FROM chainguard/wolfi-base:${WOLFI_VERSION} as base
+FROM chainguard/wolfi-base:${WOLFI_VERSION} AS base
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -14,106 +14,106 @@ RUN apk add --no-cache \
     gzip \
     unzip
 
-FROM base as jq
+FROM base AS jq
 
 # --- Install jq CLI
 ARG JQ_VERSION="1.7.1"
 ENV JQ_VERSION $JQ_VERSION
-RUN curl -fsL --output /bin/jq \
+RUN curl -fsL --output /usr/bin/jq \
     https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-${TARGETOS}-${TARGETARCH} && \
-    chmod 755 /bin/jq
+    chmod 755 /usr/bin/jq
 
 USER nonroot
 
-FROM base as yq
+FROM base AS yq
 
 # --- Install yq CLI
 ARG YQ_VERSION="v4.44.1"
 ENV YQ_VERSION $YQ_VERSION
-RUN curl -fsL --output /bin/yq \
+RUN curl -fsL --output /usr/bin/yq \
     https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_${TARGETOS}_${TARGETARCH} && \
-    chmod 755 /bin/yq
+    chmod 755 /usr/bin/yq
 
 USER nonroot
 
-FROM base as powerline-go
+FROM base AS powerline-go
 
 # --- Install yq CLI
 ARG POWERLINEGO_VERSION="v1.24"
 ENV POWERLINEGO_VERSION $POWERLINEGO_VERSION
-RUN curl -fsL --output /bin/powerline-go \
+RUN curl -fsL --output /usr/bin/powerline-go \
     https://github.com/justjanne/powerline-go/releases/download/${POWERLINEGO_VERSION}/powerline-go-${TARGETOS}-${TARGETARCH} && \
-    chmod 755 /bin/powerline-go
+    chmod 755 /usr/bin/powerline-go
 
 USER nonroot
 
-FROM base as kubectl
+FROM base AS kubectl
 
 # --- Install kubectl CLI
 ARG KUBECTL_VERSION="v1.29.5"
 ENV KUBECTL_VERSION $KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
-    -o /bin/kubectl && \
-    chmod 755 /bin/kubectl
+    -o /usr/bin/kubectl && \
+    chmod 755 /usr/bin/kubectl
 
 USER nonroot
 
-FROM base as k9s
+FROM base AS k9s
 
 # --- Install k9s CLI
 ARG K9S_VERSION="v0.32.5"
 ENV K9S_VERSION $K9S_VERSION
 RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin k9s && \
-    chmod 755 /bin/k9s
+    tar xvzf - -C /usr/bin k9s && \
+    chmod 755 /usr/bin/k9s
 
 USER nonroot
 
-FROM base as helm
+FROM base AS helm
 
 # --- Install helm CLI
 ARG HELM_VERSION="v3.16.2"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
-    tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
-    chmod 755 /bin/helm
+    tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
+    chmod 755 /usr/bin/helm
 
 USER nonroot
 
-FROM base as helmfile
+FROM base AS helmfile
 
 # --- Install helmfile CLI
 ARG HELMFILE_VERSION="0.169.0"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin helmfile && \
-    chmod 755 /bin/helmfile
+    tar xvzf - -C /usr/bin helmfile && \
+    chmod 755 /usr/bin/helmfile
 
 USER nonroot
 
-FROM base as grype
+FROM base AS grype
 
 # --- Install grype CLI
 ARG GRYPE_VERSION="0.82.1"
 ENV GRYPE_VERSION $GRYPE_VERSION
 RUN curl -fsSL https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin grype && \
-    chmod 755 /bin/grype
+    tar xvzf - -C /usr/bin grype && \
+    chmod 755 /usr/bin/grype
 
 USER nonroot
 
-FROM base as cosign
+FROM base AS cosign
 
 # --- Install cosign CLI
 ARG COSIGN_VERSION="2.4.1"
 ENV COSIGN_VERSION $COSIGN_VERSION
 RUN curl -fsSL https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-${TARGETOS}-${TARGETARCH} \
-    -o /bin/cosign && \
-    chmod 755 /bin/cosign
+    -o /usr/bin/cosign && \
+    chmod 755 /usr/bin/cosign
 
 USER nonroot
 
-FROM base as terraform
+FROM base AS terraform
 
 # --- Install terraform CLI
 ARG TERRAFORM_VERSION="1.9.8"
@@ -122,35 +122,35 @@ RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
         -o ${TEMP_DIR}/terraform.zip && \
     unzip -d $TEMP_DIR ${TEMP_DIR}/terraform.zip  && \
-    mv ${TEMP_DIR}/terraform /bin/terraform && \
-    chmod 755 /bin/terraform && \
+    mv ${TEMP_DIR}/terraform /usr/bin/terraform && \
+    chmod 755 /usr/bin/terraform && \
     rm -rf ${TEMP_DIR}
 
 USER nonroot
 
-FROM base as tofu
+FROM base AS tofu
 
 # --- Install tofu CLI
 ARG TOFU_VERSION="1.8.3"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin tofu && \
-    chmod 755 /bin/tofu
+    tar xvzf - -C /usr/bin tofu && \
+    chmod 755 /usr/bin/tofu
 
 USER nonroot
 
-FROM base as terragrunt
+FROM base AS terragrunt
 
 # --- Install terragrunt CLI
 ARG TERRAGRUNT_VERSION="0.68.4"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
-    -o /bin/terragrunt && \
-    chmod 755 /bin/terragrunt
+    -o /usr/bin/terragrunt && \
+    chmod 755 /usr/bin/terragrunt
 
 USER nonroot
 
-FROM base as vault
+FROM base AS vault
 
 # --- Install vault CLI
 ARG VAULT_VERSION="1.18.0"
@@ -159,20 +159,20 @@ RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
     -o ${TEMP_DIR}/vault.zip && \
     unzip -d $TEMP_DIR ${TEMP_DIR}/vault.zip  && \
-    mv ${TEMP_DIR}/vault /bin/vault && \
-    chmod 755 /bin/vault && \
+    mv ${TEMP_DIR}/vault /usr/bin/vault && \
+    chmod 755 /usr/bin/vault && \
     rm -rf ${TEMP_DIR}
 
 USER nonroot
 
-FROM base as dagger
+FROM base AS dagger
 
 # --- Install dagger CLI
 ARG DAGGER_VERSION="0.13.5"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin dagger && \
-    chmod 755 /bin/dagger
+    tar xvzf - -C /usr/bin dagger && \
+    chmod 755 /usr/bin/dagger
 
 USER nonroot
 
@@ -236,20 +236,20 @@ RUN groupadd -g 996 docker && \
     usermod -a -G docker abc
 
 # --- Install binaries
-COPY --link --from=cosign /bin/cosign /usr/local/bin/cosign
-COPY --link --from=dagger /bin/dagger /usr/local/bin/dagger
-COPY --link --from=grype /bin/grype /usr/local/bin/grype
-COPY --link --from=helm /bin/helm /usr/local/bin/helm
-COPY --link --from=helmfile /bin/helmfile /usr/local/bin/helmfile
-COPY --link --from=jq /bin/jq /usr/local/bin/jq
-COPY --link --from=k9s /bin/k9s /usr/local/bin/k9s
-COPY --link --from=kubectl /bin/kubectl /usr/local/bin/kubectl
-COPY --link --from=powerline-go /bin/powerline-go /usr/local/bin/powerline-go
-COPY --link --from=terraform /bin/terraform /usr/local/bin/terraform
-COPY --link --from=terragrunt /bin/terragrunt /usr/local/bin/terragrunt
-COPY --link --from=tofu /bin/tofu /usr/local/bin/tofu
-COPY --link --from=vault /bin/vault /usr/local/bin/vault
-COPY --link --from=yq /bin/yq /usr/local/bin/yq
+COPY --link --from=cosign /usr/bin/cosign /usr/bin/cosign
+COPY --link --from=dagger /usr/bin/dagger /usr/bin/dagger
+COPY --link --from=grype /usr/bin/grype /usr/bin/grype
+COPY --link --from=helm /usr/bin/helm /usr/bin/helm
+COPY --link --from=helmfile /usr/bin/helmfile /usr/bin/helmfile
+COPY --link --from=jq /usr/bin/jq /usr/bin/jq
+COPY --link --from=k9s /usr/bin/k9s /usr/bin/k9s
+COPY --link --from=kubectl /usr/bin/kubectl /usr/bin/kubectl
+COPY --link --from=powerline-go /usr/bin/powerline-go /usr/bin/powerline-go
+COPY --link --from=terraform /usr/bin/terraform /usr/bin/terraform
+COPY --link --from=terragrunt /usr/bin/terragrunt /usr/bin/terragrunt
+COPY --link --from=tofu /usr/bin/tofu /usr/bin/tofu
+COPY --link --from=vault /usr/bin/vault /usr/bin/vault
+COPY --link --from=yq /usr/bin/yq /usr/bin/yq
 
 # --- Install pipx
 ARG PIPX_BIN_DIR=/usr/local/bin

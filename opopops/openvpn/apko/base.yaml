@@ -8,7 +8,7 @@ contents:
     - wolfi-keys
 
 accounts:
-  run-as: root
+  run-as: 0
 
 work-dir: /
 

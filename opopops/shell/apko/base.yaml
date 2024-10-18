@@ -12,5 +12,4 @@ contents:
     - wolfi-baselayout
     - yq
 
-entrypoint:
-  command: bash -c
+cmd: /bin/sh -l

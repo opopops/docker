@@ -20,4 +20,4 @@ RUN apk add --no-cache \
     vim \
     yq
 
-USER nonroot
+USER 65532

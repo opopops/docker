@@ -3,7 +3,7 @@
 ARG WOLFI_VERSION="latest"
 ARG CODE_SERVER_VERSION="latest"
 
-FROM chainguard/wolfi-base:${WOLFI_VERSION} as base
+FROM chainguard/wolfi-base:${WOLFI_VERSION} AS base
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -14,51 +14,51 @@ RUN apk add --no-cache \
     gzip \
     unzip
 
-FROM base as kubectl
+FROM base AS kubectl
 
 # --- Install kubectl CLI
-ARG KUBECTL_VERSION="v1.29.5"
+ARG KUBECTL_VERSION="v1.30.5"
 ENV KUBECTL_VERSION $KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
-    -o /bin/kubectl && \
-    chmod 755 /bin/kubectl
+    -o /usr/bin/kubectl && \
+    chmod 755 /usr/bin/kubectl
 
 USER 65532
 
-FROM base as k9s
+FROM base AS k9s
 
 # --- Install k9s CLI
 ARG K9S_VERSION="v0.32.5"
 ENV K9S_VERSION $K9S_VERSION
 RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin k9s && \
-    chmod 755 /bin/k9s
+    tar xvzf - -C /usr/bin k9s && \
+    chmod 755 /usr/bin/k9s
 
 USER 65532
 
-FROM base as helm
+FROM base AS helm
 
 # --- Install helm CLI
 ARG HELM_VERSION="v3.16.2"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
-    tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
-    chmod 755 /bin/helm
+    tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
+    chmod 755 /usr/bin/helm
 
 USER 65532
 
-FROM base as helmfile
+FROM base AS helmfile
 
 # --- Install helmfile CLI
 ARG HELMFILE_VERSION="0.169.0"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin helmfile && \
-    chmod 755 /bin/helmfile
+    tar xvzf - -C /usr/bin helmfile && \
+    chmod 755 /usr/bin/helmfile
 
 USER 65532
 
-FROM base as terraform
+FROM base AS terraform
 
 # --- Install terraform CLI
 ARG TERRAFORM_VERSION="1.9.8"
@@ -67,35 +67,35 @@ RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
         -o ${TEMP_DIR}/terraform.zip && \
     unzip -d $TEMP_DIR ${TEMP_DIR}/terraform.zip  && \
-    mv ${TEMP_DIR}/terraform /bin/terraform && \
-    chmod 755 /bin/terraform && \
+    mv ${TEMP_DIR}/terraform /usr/bin/terraform && \
+    chmod 755 /usr/bin/terraform && \
     rm -rf ${TEMP_DIR}
 
 USER 65532
 
-FROM base as tofu
+FROM base AS tofu
 
 # --- Install tofu CLI
 ARG TOFU_VERSION="1.8.3"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin tofu && \
-    chmod 755 /bin/tofu
+    tar xvzf - -C /usr/bin tofu && \
+    chmod 755 /usr/bin/tofu
 
 USER 65532
 
-FROM base as terragrunt
+FROM base AS terragrunt
 
 # --- Install terragrunt CLI
 ARG TERRAGRUNT_VERSION="0.68.4"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
-    -o /bin/terragrunt && \
-    chmod 755 /bin/terragrunt
+    -o /usr/bin/terragrunt && \
+    chmod 755 /usr/bin/terragrunt
 
 USER 65532
 
-FROM base as vault
+FROM base AS vault
 
 # --- Install vault CLI
 ARG VAULT_VERSION="1.18.0"
@@ -104,31 +104,31 @@ RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
     -o ${TEMP_DIR}/vault.zip && \
     unzip -d $TEMP_DIR ${TEMP_DIR}/vault.zip  && \
-    mv ${TEMP_DIR}/vault /bin/vault && \
-    chmod 755 /bin/vault && \
+    mv ${TEMP_DIR}/vault /usr/bin/vault && \
+    chmod 755 /usr/bin/vault && \
     rm -rf ${TEMP_DIR}
 
 USER 65532
 
-FROM base as doctl
+FROM base AS doctl
 
 # --- Install doctl CLI
 ARG DOCTL_VERSION="1.115.0"
 ENV DOCTL_VERSION $DOCTL_VERSION
 RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin doctl && \
-    chmod 755 /bin/doctl
+    tar xvzf - -C /usr/bin doctl && \
+    chmod 755 /usr/bin/doctl
 
 USER 65532
 
-FROM base as dagger
+FROM base AS dagger
 
 # --- Install dagger CLI
 ARG DAGGER_VERSION="0.13.5"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /bin dagger && \
-    chmod 755 /bin/dagger
+    tar xvzf - -C /usr/bin dagger && \
+    chmod 755 /usr/bin/dagger
 
 FROM chainguard/wolfi-base:${WOLFI_VERSION}
 
@@ -152,19 +152,19 @@ RUN apk add --no-cache \
     yq
 
 # --- Install binaries
-RUN mkdir -p /usr/local/bin
-COPY --link --from=dagger /bin/dagger /usr/local/bin/dagger
-COPY --link --from=doctl /bin/doctl /usr/local/bin/doctl
-COPY --link --from=helm /bin/helm /usr/local/bin/helm
-COPY --link --from=helmfile /bin/helmfile /usr/local/bin/helmfile
-COPY --link --from=k9s /bin/k9s /usr/local/bin/k9s
-COPY --link --from=kubectl /bin/kubectl /usr/local/bin/kubectl
-COPY --link --from=terraform /bin/terraform /usr/local/bin/terraform
-COPY --link --from=terragrunt /bin/terragrunt /usr/local/bin/terragrunt
-COPY --link --from=tofu /bin/tofu /usr/local/bin/tofu
-COPY --link --from=vault /bin/vault /usr/local/bin/vault
+COPY --link --from=dagger /usr/bin/dagger /usr/bin/dagger
+COPY --link --from=doctl /usr/bin/doctl /usr/bin/doctl
+COPY --link --from=helm /usr/bin/helm /usr/bin/helm
+COPY --link --from=helmfile /usr/bin/helmfile /usr/bin/helmfile
+COPY --link --from=k9s /usr/bin/k9s /usr/bin/k9s
+COPY --link --from=kubectl /usr/bin/kubectl /usr/bin/kubectl
+COPY --link --from=terraform /usr/bin/terraform /usr/bin/terraform
+COPY --link --from=terragrunt /usr/bin/terragrunt /usr/bin/terragrunt
+COPY --link --from=tofu /usr/bin/tofu /usr/bin/tofu
+COPY --link --from=vault /usr/bin/vault /usr/bin/vault
 
 # --- Install pipx
+RUN mkdir -p /usr/local/bin
 ARG PIPX_BIN_DIR=/usr/local/bin
 ARG PIPX_HOME=/usr/local/pipx
 ENV PIPX_BIN_DIR $PIPX_BIN_DIR
