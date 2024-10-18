@@ -21,7 +21,7 @@ ARG KUBECTL_VERSION="v1.29.5"
 ENV KUBECTL_VERSION $KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
     -o /usr/bin/kubectl && \
-    chmod 755 /usrbin/kubectl
+    chmod 755 /usr/bin/kubectl
 
 USER 65532
 
@@ -42,7 +42,7 @@ FROM base AS helm
 ARG HELM_VERSION="v3.16.2"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
-    tar xvzf - --strip-components=1 -C /bin ${TARGETOS}-${TARGETARCH}/helm && \
+    tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
     chmod 755 /usr/bin/helm
 
 USER 65532
