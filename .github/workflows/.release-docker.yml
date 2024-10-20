@@ -56,13 +56,14 @@ jobs:
           verb: call
           args: |
             build \
-            --context="${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}" \
-            --platform="${{ inputs.platform }}" \
+              --context="${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}" \
+              --platform="${{ inputs.platform }}" \
             publish \
-            --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
-            --username="${DOCKER_REGISTRY_USERNAME}" \
-            --password=env:DOCKER_REGISTRY_PASSWORD \
-            --output digest.txt \
+              --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+              --username="${DOCKER_REGISTRY_USERNAME}" \
+              --password=env:DOCKER_REGISTRY_PASSWORD \
+            digest \
+              --output digest.txt \
       - id: digest
         name: Define digest output
         run: echo "digest=$(head -1 digest.txt)" >> "$GITHUB_OUTPUT"
@@ -90,8 +91,8 @@ jobs:
           verb: call
           args: |
             scan \
-            --container="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
-            --fail-on="${{ inputs.scan-fail-on }}" \
+              --address="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+              --fail-on="${{ inputs.scan-fail-on }}" \
 
   sign:
     name: sign
@@ -117,8 +118,8 @@ jobs:
           verb: call
           args: |
             sign \
-            --digest="${{ needs.build.outputs.digest }}" \
-            --password=env:COSIGN_PASSWORD \
-            --private-key=env:COSIGN_PRIVATE_KEY \
-            --registry-username="${DOCKER_REGISTRY_USERNAME}" \
-            --registry-password=env:DOCKER_REGISTRY_PASSWORD \
+              --digest="${{ needs.build.outputs.digest }}" \
+              --password=env:COSIGN_PASSWORD \
+              --private-key=env:COSIGN_PRIVATE_KEY \
+              --registry-username="${DOCKER_REGISTRY_USERNAME}" \
+              --registry-password=env:DOCKER_REGISTRY_PASSWORD \

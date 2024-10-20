@@ -64,6 +64,7 @@ jobs:
             --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
             --username="${DOCKER_REGISTRY_USERNAME}" \
             --password=env:DOCKER_REGISTRY_PASSWORD \
+            digest \
             --output digest.txt \
       - id: digest
         name: Define digest output
@@ -92,8 +93,8 @@ jobs:
           verb: call
           args: |
             scan \
-            --container="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
-            --fail-on="critical" \
+              --address="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+              --fail-on="critical" \
 
   sign:
     name: sign
@@ -119,8 +120,8 @@ jobs:
           verb: call
           args: |
             sign \
-            --digest="${{ needs.build.outputs.digest }}" \
-            --password=env:COSIGN_PASSWORD \
-            --private-key=env:COSIGN_PRIVATE_KEY \
-            --registry-username="${DOCKER_REGISTRY_USERNAME}" \
-            --registry-password=env:DOCKER_REGISTRY_PASSWORD \
+              --digest="${{ needs.build.outputs.digest }}" \
+              --password=env:COSIGN_PASSWORD \
+              --private-key=env:COSIGN_PRIVATE_KEY \
+              --registry-username="${DOCKER_REGISTRY_USERNAME}" \
+              --registry-password=env:DOCKER_REGISTRY_PASSWORD \
