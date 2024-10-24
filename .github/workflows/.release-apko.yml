@@ -29,25 +29,27 @@ on:
         default: true
 
 env:
-  DAGGER_MODULE: "github.com/opopops/daggerverse/docker@main"
-  DAGGER_VERSION: "0.13.5"
+  DAGGER_MODULE: "github.com/opopops/daggerverse/apko@main"
+  DAGGER_VERSION: "0.13.6"
 
 jobs:
-  build:
-    name: build
+  apko:
+    name: apko
     runs-on: self-hosted
     environment: main
     outputs:
-      digest: ${{ steps.digest.outputs.digest }}
+      digest: ${{ steps.ref.outputs.ref }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build Docker image
-        uses: dagger/dagger-for-github@v6
+      - name: Build image with Apko
+        uses: dagger/dagger-for-github@v5
         env:
           DOCKER_REGISTRY_HOST: ${{ vars.DOCKER_REGISTRY_HOST }}
           DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
         with:
           version: ${{ env.DAGGER_VERSION }}
           cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
@@ -55,73 +57,112 @@ jobs:
           module: ${{ env.DAGGER_MODULE }}
           verb: call
           args: |
-            apko \
-            --context="${DOCKER_REGISTRY_USERNAME}" \
-            --config="${{ github.workflow }}/apko/${{ inputs.target }}.yaml" \
-            --arch="${{ inputs.arch }}" \
-            --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
-            publish \
-            --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
             --username="${DOCKER_REGISTRY_USERNAME}" \
             --password=env:DOCKER_REGISTRY_PASSWORD \
-            digest \
-            --output digest.txt \
-      - id: digest
-        name: Define digest output
-        run: echo "digest=$(head -1 digest.txt)" >> "$GITHUB_OUTPUT"
-
-  scan:
-    name: scan
-    runs-on: self-hosted
-    environment: main
-    needs: build
-    if: ${{ inputs.scan }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Scan Docker image
-        uses: dagger/dagger-for-github@v6
-        env:
-          DOCKER_REGISTRY_HOST: ${{ vars.DOCKER_REGISTRY_HOST }}
-          DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-        with:
-          version: ${{ inputs.dagger-version }}
-          cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
-          engine-stop: false
-          module: ${{ inputs.dagger-module }}
-          verb: call
-          args: |
-            scan \
-              --address="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
-              --fail-on="critical" \
-
-  sign:
-    name: sign
-    runs-on: self-hosted
-    environment: main
-    needs: build
-    if: ${{ inputs.sign }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Sign Docker image
-        uses: dagger/dagger-for-github@v6
-        env:
-          DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-        with:
-          version: ${{ inputs.dagger-version }}
-          cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
-          engine-stop: false
-          module: ${{ inputs.dagger-module }}
-          verb: call
-          args: |
-            sign \
-              --digest="${{ needs.build.outputs.digest }}" \
+            publish \
+              --context="${DOCKER_REGISTRY_USERNAME}" \
+              --config="${{ github.workflow }}/apko/${{ inputs.target }}.yaml" \
+              --arch="${{ inputs.arch }}" \
+              --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+            with-sign \
               --password=env:COSIGN_PASSWORD \
               --private-key=env:COSIGN_PRIVATE_KEY \
-              --registry-username="${DOCKER_REGISTRY_USERNAME}" \
-              --registry-password=env:DOCKER_REGISTRY_PASSWORD \
+            with-scan \
+            ref \
+              --output=ref.txt \
+      - id: ref
+        name: Image ref
+        run: echo "ref=$(head -1 ref.txt)" >> "$GITHUB_OUTPUT"
+
+  # build:
+  #   name: build
+  #   runs-on: self-hosted
+  #   environment: main
+  #   outputs:
+  #     digest: ${{ steps.digest.outputs.digest }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Build Docker image
+  #       uses: dagger/dagger-for-github@v6
+  #       env:
+  #         DOCKER_REGISTRY_HOST: ${{ vars.DOCKER_REGISTRY_HOST }}
+  #         DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+  #         DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+  #       with:
+  #         version: ${{ env.DAGGER_VERSION }}
+  #         cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
+  #         engine-stop: false
+  #         module: ${{ env.DAGGER_MODULE }}
+  #         verb: call
+  #         args: |
+  #           apko \
+  #           --context="${DOCKER_REGISTRY_USERNAME}" \
+  #           --config="${{ github.workflow }}/apko/${{ inputs.target }}.yaml" \
+  #           --arch="${{ inputs.arch }}" \
+  #           --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+  #           publish \
+  #           --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+  #           --username="${DOCKER_REGISTRY_USERNAME}" \
+  #           --password=env:DOCKER_REGISTRY_PASSWORD \
+  #           digest \
+  #           --output digest.txt \
+  #     - id: digest
+  #       name: Define digest output
+  #       run: echo "digest=$(head -1 digest.txt)" >> "$GITHUB_OUTPUT"
+
+  # scan:
+  #   name: scan
+  #   runs-on: self-hosted
+  #   environment: main
+  #   needs: build
+  #   if: ${{ inputs.scan }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Scan Docker image
+  #       uses: dagger/dagger-for-github@v6
+  #       env:
+  #         DOCKER_REGISTRY_HOST: ${{ vars.DOCKER_REGISTRY_HOST }}
+  #         DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+  #         DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+  #       with:
+  #         version: ${{ inputs.dagger-version }}
+  #         cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
+  #         engine-stop: false
+  #         module: ${{ inputs.dagger-module }}
+  #         verb: call
+  #         args: |
+  #           scan \
+  #             --address="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+  #             --fail-on="critical" \
+
+  # sign:
+  #   name: sign
+  #   runs-on: self-hosted
+  #   environment: main
+  #   needs: build
+  #   if: ${{ inputs.sign }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Sign Docker image
+  #       uses: dagger/dagger-for-github@v6
+  #       env:
+  #         DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+  #         DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+  #         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+  #         COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+  #       with:
+  #         version: ${{ inputs.dagger-version }}
+  #         cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
+  #         engine-stop: false
+  #         module: ${{ inputs.dagger-module }}
+  #         verb: call
+  #         args: |
+  #           sign \
+  #             --digest="${{ needs.build.outputs.digest }}" \
+  #             --password=env:COSIGN_PASSWORD \
+  #             --private-key=env:COSIGN_PRIVATE_KEY \
+  #             --registry-username="${DOCKER_REGISTRY_USERNAME}" \
+  #             --registry-password=env:DOCKER_REGISTRY_PASSWORD \
