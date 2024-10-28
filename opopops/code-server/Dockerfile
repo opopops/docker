@@ -83,7 +83,7 @@ USER nonroot
 FROM base AS helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.169.0"
+ARG HELMFILE_VERSION="0.169.1"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin helmfile && \
@@ -94,7 +94,7 @@ USER nonroot
 FROM base AS grype
 
 # --- Install grype CLI
-ARG GRYPE_VERSION="0.82.1"
+ARG GRYPE_VERSION="0.82.2"
 ENV GRYPE_VERSION $GRYPE_VERSION
 RUN curl -fsSL https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin grype && \
@@ -131,7 +131,7 @@ USER nonroot
 FROM base AS tofu
 
 # --- Install tofu CLI
-ARG TOFU_VERSION="1.8.3"
+ARG TOFU_VERSION="1.8.4"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin tofu && \
@@ -168,7 +168,7 @@ USER nonroot
 FROM base AS dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.13.5"
+ARG DAGGER_VERSION="0.13.6"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \
