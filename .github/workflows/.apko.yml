@@ -1,20 +1,24 @@
-name: release-docker
+name: release-apko
 
 on:
   workflow_call:
     inputs:
+      runner:
+        type: string
+        required: false
+        default: "ubuntu-latest"
       target:
         type: string
         required: false
-        default: ""
+        default: "base"
       tag:
         type: string
         required: false
         default: "latest"
-      platform:
+      arch:
         type: string
         required: false
-        default: "linux/amd64,linux/arm64"
+        default: "x86_64,aarch64"
       scan:
         type: boolean
         required: false
@@ -29,21 +33,21 @@ on:
         default: true
 
 env:
-  DAGGER_MODULE: "github.com/opopops/daggerverse/docker@main"
+  DAGGER_MODULE: "github.com/opopops/daggerverse/apko@main"
   DAGGER_VERSION: "0.13.6"
 
 jobs:
-  docker:
-    name: docker
-    runs-on: self-hosted
+  apko:
+    name: apko
     environment: main
+    runs-on: ${{ inputs.runner }}
     outputs:
       digest: ${{ steps.ref.outputs.ref }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build Docker image
-        uses: dagger/dagger-for-github@v5
+      - name: Build image with Apko
+        uses: dagger/dagger-for-github@v6
         env:
           DOCKER_REGISTRY_HOST: ${{ vars.DOCKER_REGISTRY_HOST }}
           DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
@@ -59,11 +63,11 @@ jobs:
           args: |
             --username="${DOCKER_REGISTRY_USERNAME}" \
             --password=env:DOCKER_REGISTRY_PASSWORD \
-            build \
-              --context="${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}" \
-              --platform="${{ inputs.platform }}" \
             publish \
-              --image="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+              --context="${DOCKER_REGISTRY_USERNAME}" \
+              --config="${{ github.workflow }}/apko/${{ inputs.target }}.yaml" \
+              --arch="${{ inputs.arch }}" \
+              --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
             with-sign \
               --password=env:COSIGN_PASSWORD \
               --private-key=env:COSIGN_PRIVATE_KEY \
@@ -84,7 +88,7 @@ jobs:
   #     - name: Checkout
   #       uses: actions/checkout@v4
   #     - name: Build Docker image
-  #       uses: dagger/dagger-for-github@v5
+  #       uses: dagger/dagger-for-github@v6
   #       env:
   #         DOCKER_REGISTRY_HOST: ${{ vars.DOCKER_REGISTRY_HOST }}
   #         DOCKER_REGISTRY_USERNAME: ${{ vars.DOCKER_REGISTRY_USERNAME }}
@@ -96,15 +100,17 @@ jobs:
   #         module: ${{ env.DAGGER_MODULE }}
   #         verb: call
   #         args: |
-  #           build \
-  #             --context="${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}" \
-  #             --platform="${{ inputs.platform }}" \
+  #           apko \
+  #           --context="${DOCKER_REGISTRY_USERNAME}" \
+  #           --config="${{ github.workflow }}/apko/${{ inputs.target }}.yaml" \
+  #           --arch="${{ inputs.arch }}" \
+  #           --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
   #           publish \
-  #             --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
-  #             --username="${DOCKER_REGISTRY_USERNAME}" \
-  #             --password=env:DOCKER_REGISTRY_PASSWORD \
+  #           --tag="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
+  #           --username="${DOCKER_REGISTRY_USERNAME}" \
+  #           --password=env:DOCKER_REGISTRY_PASSWORD \
   #           digest \
-  #             --output digest.txt \
+  #           --output digest.txt \
   #     - id: digest
   #       name: Define digest output
   #       run: echo "digest=$(head -1 digest.txt)" >> "$GITHUB_OUTPUT"
@@ -133,7 +139,7 @@ jobs:
   #         args: |
   #           scan \
   #             --address="${DOCKER_REGISTRY_HOST}/${DOCKER_REGISTRY_USERNAME}/${{ github.workflow }}:${{ inputs.tag }}" \
-  #             --fail-on="${{ inputs.scan-fail-on }}" \
+  #             --fail-on="critical" \
 
   # sign:
   #   name: sign
