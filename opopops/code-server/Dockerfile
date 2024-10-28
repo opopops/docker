@@ -3,7 +3,7 @@
 ARG WOLFI_VERSION="latest"
 ARG CODE_SERVER_VERSION="latest"
 
-FROM chainguard/wolfi-base:${WOLFI_VERSION} AS base
+FROM --platform=$BUILDPLATFORM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION} AS base
 
 ARG TARGETOS
 ARG TARGETARCH

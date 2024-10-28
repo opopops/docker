@@ -3,7 +3,7 @@
 ARG WOLFI_VERSION="latest"
 ARG CODE_SERVER_VERSION="latest"
 
-FROM chainguard/wolfi-base:${WOLFI_VERSION} AS base
+FROM --platform=$BUILDPLATFORM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION} AS base
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -58,7 +58,7 @@ RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFIL
 
 USER 65532
 
-FROM chainguard/wolfi-base:${WOLFI_VERSION}
+FROM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION}
 
 LABEL org.opencontainers.image.authors="opopops"
 

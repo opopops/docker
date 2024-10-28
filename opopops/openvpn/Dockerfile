@@ -1,4 +1,4 @@
-FROM chainguard/wolfi-base:latest
+FROM cgr.dev/chainguard/wolfi-base:latest
 
 LABEL org.opencontainers.image.authors="opopops"
 
