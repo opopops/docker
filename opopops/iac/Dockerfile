@@ -87,7 +87,7 @@ USER 65532
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.68.4"
+ARG TERRAGRUNT_VERSION="0.68.6"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -98,7 +98,7 @@ USER 65532
 FROM base AS vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.18.0"
+ARG VAULT_VERSION="1.18.1"
 ENV VAULT_VERSION $VAULT_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -124,7 +124,7 @@ USER 65532
 FROM base AS dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.13.6"
+ARG DAGGER_VERSION="0.13.7"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \

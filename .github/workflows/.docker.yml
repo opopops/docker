@@ -34,7 +34,7 @@ on:
 
 env:
   DAGGER_MODULE: "github.com/opopops/daggerverse/docker@main"
-  DAGGER_VERSION: "0.13.6"
+  DAGGER_VERSION: "0.13.7"
 
 jobs:
   docker:
