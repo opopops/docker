@@ -76,7 +76,7 @@ USER 65532
 FROM base AS tofu
 
 # --- Install tofu CLI
-ARG TOFU_VERSION="1.8.4"
+ARG TOFU_VERSION="1.8.5"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin tofu && \
@@ -87,7 +87,7 @@ USER 65532
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.68.6"
+ARG TERRAGRUNT_VERSION="0.68.7"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
