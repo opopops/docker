@@ -61,7 +61,7 @@ USER nonroot
 FROM base AS k9s
 
 # --- Install k9s CLI
-ARG K9S_VERSION="v0.32.5"
+ARG K9S_VERSION="v0.32.6"
 ENV K9S_VERSION $K9S_VERSION
 RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin k9s && \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.68.7"
+ARG TERRAGRUNT_VERSION="0.68.12"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -168,7 +168,7 @@ USER nonroot
 FROM base AS dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.13.7"
+ARG DAGGER_VERSION="0.14.0"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \
