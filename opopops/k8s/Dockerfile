@@ -28,7 +28,7 @@ USER 65532
 FROM base AS k9s
 
 # --- Install k9s CLI
-ARG K9S_VERSION="v0.32.5"
+ARG K9S_VERSION="v0.32.6"
 ENV K9S_VERSION $K9S_VERSION
 RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin k9s && \
