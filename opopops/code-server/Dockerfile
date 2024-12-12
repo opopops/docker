@@ -83,7 +83,7 @@ USER nonroot
 FROM base AS helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.169.1"
+ARG HELMFILE_VERSION="0.169.2"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin helmfile && \
@@ -94,7 +94,7 @@ USER nonroot
 FROM base AS grype
 
 # --- Install grype CLI
-ARG GRYPE_VERSION="0.85.0"
+ARG GRYPE_VERSION="0.86.0"
 ENV GRYPE_VERSION $GRYPE_VERSION
 RUN curl -fsSL https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin grype && \
@@ -116,7 +116,7 @@ USER nonroot
 FROM base AS terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.10.0"
+ARG TERRAFORM_VERSION="1.10.2"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -131,7 +131,7 @@ USER nonroot
 FROM base AS tofu
 
 # --- Install tofu CLI
-ARG TOFU_VERSION="1.8.6"
+ARG TOFU_VERSION="1.8.7"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin tofu && \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.69.1"
+ARG TERRAGRUNT_VERSION="0.69.11"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -168,7 +168,7 @@ USER nonroot
 FROM base AS dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.14.0"
+ARG DAGGER_VERSION="0.15.1"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \
@@ -210,7 +210,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
 ENV EDITOR=vi
 
 # --- Install docker
-ARG DOCKER_VERSION="27.3.1"
+ARG DOCKER_VERSION="27.4.0"
 ENV DOCKER_VERSION $DOCKER_VERSION
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
