@@ -2,7 +2,7 @@
 
 ARG WOLFI_VERSION="latest"
 
-FROM cgr.dev/chainguard/bash:${WOLFI_VERSION}
+FROM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION}
 
 LABEL org.opencontainers.image.authors="opopops"
 
