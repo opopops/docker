@@ -39,7 +39,7 @@ USER 65532
 FROM base AS helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.16.3"
+ARG HELM_VERSION="v3.16.4"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -61,7 +61,7 @@ USER 65532
 FROM base AS terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.10.2"
+ARG TERRAFORM_VERSION="1.10.4"
 ENV TERRAFORM_VERSION $TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -76,7 +76,7 @@ USER 65532
 FROM base AS tofu
 
 # --- Install tofu CLI
-ARG TOFU_VERSION="1.8.7"
+ARG TOFU_VERSION="1.9.0"
 ENV TOFU_VERSION $TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin tofu && \
@@ -87,7 +87,7 @@ USER 65532
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.69.11"
+ARG TERRAGRUNT_VERSION="0.71.4"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -98,7 +98,7 @@ USER 65532
 FROM base AS vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.18.2"
+ARG VAULT_VERSION="1.18.3"
 ENV VAULT_VERSION $VAULT_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -113,7 +113,7 @@ USER 65532
 FROM base AS doctl
 
 # --- Install doctl CLI
-ARG DOCTL_VERSION="1.119.1"
+ARG DOCTL_VERSION="1.120.1"
 ENV DOCTL_VERSION $DOCTL_VERSION
 RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin doctl && \
