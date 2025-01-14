@@ -34,7 +34,7 @@ on:
 
 env:
   DAGGER_MODULE: "github.com/opopops/daggerverse/apko@main"
-  DAGGER_VERSION: "0.15.1"
+  DAGGER_VERSION: "0.15.2"
 
 jobs:
   apko:
