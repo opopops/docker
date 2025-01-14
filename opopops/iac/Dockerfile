@@ -87,7 +87,7 @@ USER 65532
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.71.4"
+ARG TERRAGRUNT_VERSION="0.72.0"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -113,7 +113,7 @@ USER 65532
 FROM base AS doctl
 
 # --- Install doctl CLI
-ARG DOCTL_VERSION="1.120.1"
+ARG DOCTL_VERSION="1.120.2"
 ENV DOCTL_VERSION $DOCTL_VERSION
 RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin doctl && \
@@ -124,7 +124,7 @@ USER 65532
 FROM base AS dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.15.1"
+ARG DAGGER_VERSION="0.15.2"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \
