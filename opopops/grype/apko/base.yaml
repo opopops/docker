@@ -1,0 +1,23 @@
+include: apko.yaml
+
+annotations:
+  description: "Grype image based on Wolfi OS"
+
+contents:
+  packages:
+    - bash
+    - busybox
+    - ca-certificates-bundle
+    - docker-cli
+    - glibc
+    - glibc-locale-posix
+    - grype
+    - ld-linux
+    - libxcrypt
+    - libgcc
+    - wolfi-baselayout
+
+entrypoint:
+  command: /usr/bin/grype
+
+cmd: help
