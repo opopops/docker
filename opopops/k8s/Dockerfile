@@ -72,6 +72,7 @@ RUN apk add --no-cache \
     curl \
     jq \
     nano \
+    openssl \
     tzdata \
     unzip \
     vim \
