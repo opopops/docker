@@ -1,0 +1,15 @@
+include: apko.yaml
+
+contents:
+  packages:
+    - bash
+    - busybox
+    - ca-certificates-bundle
+    - crane
+    - glibc-locale-posix
+    - wolfi-baselayout
+
+entrypoint:
+  command: /usr/bin/crane
+
+cmd: --help

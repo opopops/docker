@@ -1,0 +1,16 @@
+include: apko.yaml
+
+contents:
+  packages:
+    - bash
+    - busybox
+    - ca-certificates-bundle
+    - glibc-locale-posix
+    - helm
+    - kubectl
+    - wolfi-baselayout
+
+entrypoint:
+  command: /usr/bin/helm
+
+cmd: --help

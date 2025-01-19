@@ -1,0 +1,22 @@
+include: apko.yaml
+
+contents:
+  packages:
+    - alpine-keys
+    - bash
+    - bubblewrap
+    - busybox
+    - ca-certificates-bundle
+    - glibc
+    - glibc-locale-posix
+    - ld-linux
+    - libcap
+    - libgcc
+    - melange
+    - wolfi-baselayout
+    - wolfi-keys
+
+entrypoint:
+  command: /usr/bin/melange
+
+cmd: --help
