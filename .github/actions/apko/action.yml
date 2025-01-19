@@ -1,4 +1,4 @@
-name: release-apko
+name: apko-publish
 description: "Publish an APKO container image."
 
 inputs:

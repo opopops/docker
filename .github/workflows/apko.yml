@@ -1,4 +1,4 @@
-name: shell
+name: apko
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
     branches:
       - "main"
     paths:
-      - "opopops/shell/**"
+      - "opopops/apko/**"
   workflow_dispatch:
 
 permissions:
@@ -29,8 +29,8 @@ jobs:
         id: publish
         uses: ./.github/actions/apko
         with:
-          config: opopops/shell/apko/base.yaml
-          tag: opopops/shell:latest
+          config: opopops/apko/apko/base.yaml
+          tag: opopops/apko:latest
           dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
           cosign-password: ${{ secrets.COSIGN_PASSWORD }}
@@ -49,8 +49,8 @@ jobs:
         id: publish
         uses: ./.github/actions/apko
         with:
-          config: opopops/shell/apko/base.yaml
-          tag: opopops/shell:unstable
+          config: opopops/apko/apko/base.yaml
+          tag: opopops/apko:unstable
           dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
           cosign-password: ${{ secrets.COSIGN_PASSWORD }}

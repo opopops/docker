@@ -1,0 +1,20 @@
+include: apko.yaml
+
+annotations:
+  description: "Apko image based on Wolfi OS"
+
+contents:
+  packages:
+    - alpine-keys
+    - apko
+    - bash
+    - busybox
+    - ca-certificates-bundle
+    - glibc-locale-posix
+    - wolfi-baselayout
+    - wolfi-keys
+
+entrypoint:
+  command: /usr/bin/apko
+
+cmd: --help

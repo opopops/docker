@@ -6,20 +6,13 @@ FROM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION}
 
 LABEL org.opencontainers.image.authors="opopops"
 LABEL org.opencontainers.image.source="https://github.com/opopops/docker"
-LABEL org.opencontainers.image.description="Shell image based on Wolfi OS"
+LABEL org.opencontainers.image.description="Apko image based on Wolfi OS"
 
 USER root
 
 RUN apk add --no-cache \
-    bash \
-    bind-tools \
-    curl \
-    jq \
-    nano \
-    tree \
-    tzdata \
-    unzip \
-    vim \
-    yq
+    alpine-keys \
+    apko \
+    wolfi-keys
 
 USER 65532
