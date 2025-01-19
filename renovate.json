@@ -40,8 +40,8 @@
             "depNameTemplate": "dagger/dagger",
             "versioningTemplate": "semver",
             "fileMatch": [
-                "^\\.github\\/workflows\\/\\.apko\\.yml$",
-                "^\\.github\\/workflows\\/\\.docker\\.yml$",
+                "^\\.github\\/actions\\/\\apko\\.yml$",
+                "^\\.github\\/actions\\/\\docker\\.yml$",
                 "^opopops\\/.+\\/Dockerfile$"
             ],
             "matchStrings": [

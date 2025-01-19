@@ -12,13 +12,13 @@ jobs:
   latest:
     if: github.ref_name == 'main'
     name: latest
-    uses: "./.github/workflows/.apko.yml"
+    uses: "./.github/actions/apko.yml"
     secrets: inherit
 
   latest-dev:
     if: github.ref_name == 'main'
     name: latest-dev
-    uses: "./.github/workflows/.apko.yml"
+    uses: "./.github/actions/apko.yml"
     with:
       tag: latest-dev
       target: dev
@@ -27,7 +27,7 @@ jobs:
   unstable:
     if: github.ref_name == 'dev'
     name: unstable
-    uses: "./.github/workflows/.apko.yml"
+    uses: "./.github/actions/apko.yml"
     with:
       scan: false
     secrets: inherit
@@ -35,7 +35,7 @@ jobs:
   unstable-dev:
     if: github.ref_name == 'dev'
     name: unstable-dev
-    uses: "./.github/workflows/.apko.yml"
+    uses: "./.github/actions/apko.yml"
     with:
       runner: self-hosted
       scan: false
