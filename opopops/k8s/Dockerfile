@@ -18,7 +18,7 @@ FROM base AS kubectl
 
 # --- Install kubectl CLI
 ARG KUBECTL_VERSION="v1.30.7"
-ENV KUBECTL_VERSION $KUBECTL_VERSION
+ENV KUBECTL_VERSION=$KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
     -o /usr/bin/kubectl && \
     chmod 755 /usr/bin/kubectl
@@ -29,7 +29,7 @@ FROM base AS k9s
 
 # --- Install k9s CLI
 ARG K9S_VERSION="v0.32.7"
-ENV K9S_VERSION $K9S_VERSION
+ENV K9S_VERSION=$K9S_VERSION
 RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin k9s && \
     chmod 755 /usr/bin/k9s
@@ -40,7 +40,7 @@ FROM base AS helm
 
 # --- Install helm CLI
 ARG HELM_VERSION="v3.16.4"
-ENV HELM_VERSION $HELM_VERSION
+ENV HELM_VERSION=$HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
     chmod 755 /usr/bin/helm
@@ -51,7 +51,7 @@ FROM base AS helmfile
 
 # --- Install helmfile CLI
 ARG HELMFILE_VERSION="0.169.2"
-ENV HELMFILE_VERSION $HELMFILE_VERSION
+ENV HELMFILE_VERSION=$HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin helmfile && \
     chmod 755 /usr/bin/helmfile
