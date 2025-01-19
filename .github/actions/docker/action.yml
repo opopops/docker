@@ -78,6 +78,8 @@ runs:
         file: ${{ inputs.file }}
         target: ${{ inputs.target }}
         platforms: ${{ inputs.platforms }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         push: true
         tags: |
           ghcr.io/${{ inputs.tag }}
