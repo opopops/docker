@@ -29,9 +29,10 @@ jobs:
         with:
           config: opopops/openvpn/apko/base.yaml
           tag: opopops/openvpn:latest
-          github-token: ${{ secrets.GH_REGISTRY_PASSWORD }}
-          registry-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          registry-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
 
   latest-dev:
     if: github.ref_name == 'main'
@@ -47,9 +48,10 @@ jobs:
         with:
           config: opopops/openvpn/apko/dev.yaml
           tag: opopops/openvpn:latest-dev
-          github-token: ${{ secrets.GH_REGISTRY_PASSWORD }}
-          registry-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          registry-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
 
   unstable:
     if: github.ref_name == 'dev'
@@ -65,9 +67,9 @@ jobs:
         with:
           config: opopops/openvpn/apko/base.yaml
           tag: opopops/openvpn:unstable
-          github-token: ${{ secrets.GH_REGISTRY_PASSWORD }}
-          registry-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          registry-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign: "false"
 
   unstable-dev:
     if: github.ref_name == 'dev'
@@ -83,6 +85,6 @@ jobs:
         with:
           config: opopops/openvpn/apko/dev.yaml
           tag: opopops/openvpn:unstable-dev
-          github-token: ${{ secrets.GH_REGISTRY_PASSWORD }}
-          registry-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          registry-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign: "false"

@@ -12,27 +12,33 @@ inputs:
     description: "The architectures to build the container image for."
     required: false
     default: "x86_64,aarch64"
-  github-token:
-    description: "The GitHub token to authenticate with the GitHub container registry."
-    required: true
-  registry-username:
+  dockerhub-username:
     description: "The username to authenticate with the Docker Hub container registry."
     required: true
-  registry-password:
+  dockerhub-password:
     description: "The password to authenticate with the Docker Hub container registry."
     required: true
   scan:
     description: "Whether to scan the container image for vulnerabilities."
     required: false
     default: "true"
-  scan-fail-on:
+  scan-severity-cutoff:
     description: "The severity of vulnerabilities that should cause the scan to fail."
     required: false
     default: "critical"
-  sign:
+  cosign:
     description: "Whether to sign the container image."
     required: false
     default: "true"
+  cosign-password:
+    description: "The password to sign the container image with."
+    required: false
+  cosign-private-key:
+    description: "The private key to sign the container image with."
+    required: false
+  cosign-public-key:
+    description: "The public key to verify the container image with."
+    required: false
 
 outputs:
   digest:
@@ -43,17 +49,53 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - uses: chainguard-images/actions/apko-publish@main
+    - if: ${{ inputs.cosign == 'true' }}
+      uses: sigstore/cosign-installer@v3
+
+    - if: ${{ inputs.scan == 'true' }}
+      uses: imjasonh/setup-crane@v0.4
+
+    - uses: docker/login-action@v3
+      id: login-to-github
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+
+    - uses: docker/login-action@v3
+      id: login-to-docker-hub
+      with:
+        username: ${{ inputs.dockerhub-username }}
+        password: ${{ inputs.dockerhub-password }}
+
+    - uses: distroless/actions/apko-publish@main
       id: apko
       with:
         config: ${{ inputs.config }}
         tag: ghcr.io/${{ inputs.tag }}
         archs: ${{ inputs.archs }}
-        generic-user: ${{ github.actor }}
-        generic-pass: ${{ inputs.github-token }}
 
-    - uses: imjasonh/setup-crane@v0.4
-    - shell: bash
+    - id: crane
+      shell: bash
       run: |
-        echo "${{ inputs.registry-password }}" | crane auth login docker.io --username ${{ inputs.registry-username }} --password-stdin
         crane cp ${{ steps.apko.outputs.digest }} docker.io/${{ inputs.tag }}
+
+    - if: ${{ inputs.scan == 'true' }}
+      uses: anchore/scan-action@v6
+      id: scan
+      with:
+        image: ${{ steps.apko.outputs.digest }}
+        fail-build: "true"
+        severity-cutoff: ${{ inputs.scan-severity-cutoff }}
+
+    - if: ${{ inputs.cosign == 'true' }}
+      shell: bash
+      id: cosign
+      env:
+        COSIGN_PASSWORD: ${{ inputs.cosign-password }}
+        COSIGN_PRIVATE_KEY: ${{ inputs.cosign-private-key }}
+        COSIGN_PUBLIC_KEY: ${{ inputs.cosign-public-key }}
+        COSIGN_YES: "true"
+      run: |
+        cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${{ steps.apko.outputs.digest }}
+        cosign verify --key env://COSIGN_PUBLIC_KEY ${{ steps.apko.outputs.digest }}
