@@ -1,4 +1,4 @@
-include: ../../apko.yaml
+include: apko.yaml
 
 contents:
   packages:
@@ -7,8 +7,11 @@ contents:
     - ca-certificates-bundle
     - curl
     - jq
+    - openssl
+    - tree
     - tzdata
     - unzip
+    - vim
     - wolfi-baselayout
     - yq
 

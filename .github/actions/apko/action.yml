@@ -1,0 +1,59 @@
+name: release-apko
+description: "Publish an APKO container image."
+
+inputs:
+  config:
+    description: "Path to the APKO configuration file."
+    required: false
+  tag:
+    description: "The tag to publish the container image with."
+    required: false
+  archs:
+    description: "The architectures to build the container image for."
+    required: false
+    default: "x86_64,aarch64"
+  github-token:
+    description: "The GitHub token to authenticate with the GitHub container registry."
+    required: true
+  registry-username:
+    description: "The username to authenticate with the Docker Hub container registry."
+    required: true
+  registry-password:
+    description: "The password to authenticate with the Docker Hub container registry."
+    required: true
+  scan:
+    description: "Whether to scan the container image for vulnerabilities."
+    required: false
+    default: "true"
+  scan-fail-on:
+    description: "The severity of vulnerabilities that should cause the scan to fail."
+    required: false
+    default: "critical"
+  sign:
+    description: "Whether to sign the container image."
+    required: false
+    default: "true"
+
+outputs:
+  digest:
+    value: ${{ steps.apko.outputs.digest }}
+    description: |
+      The digest of the published container image.
+
+runs:
+  using: "composite"
+  steps:
+    - uses: chainguard-images/actions/apko-publish@main
+      id: apko
+      with:
+        config: ${{ inputs.config }}
+        tag: ghcr.io/${{ inputs.tag }}
+        archs: ${{ inputs.archs }}
+        generic-user: ${{ github.actor }}
+        generic-pass: ${{ inputs.github-token }}
+
+    - uses: imjasonh/setup-crane@v0.4
+    - shell: bash
+      run: |
+        echo "${{ inputs.registry-password }}" | crane auth login docker.io --username ${{ inputs.registry-username }} --password-stdin
+        crane cp ${{ steps.apko.outputs.digest }} docker.io/${{ inputs.tag }}

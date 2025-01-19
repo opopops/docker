@@ -12,7 +12,7 @@ jobs:
   latest:
     if: github.ref_name == 'main'
     name: latest
-    uses: "./.github/actions/docker.yml"
+    uses: ./.github/actions/docker
     with:
       scan: false
     secrets: inherit
@@ -20,7 +20,7 @@ jobs:
   unstable:
     if: github.ref_name == 'dev'
     name: unstable
-    uses: "./.github/actions/docker.yml"
+    uses: ./.github/actions/docker
     with:
       runner: self-hosted
       scan: false

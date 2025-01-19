@@ -8,35 +8,81 @@ on:
       - "opopops/openvpn/**"
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
 jobs:
   latest:
     if: github.ref_name == 'main'
     name: latest
-    uses: "./.github/actions/apko.yml"
-    secrets: inherit
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/openvpn/apko/base.yaml
+          tag: opopops/openvpn:latest
+          github-token: ${{ secrets.GH_REGISTRY_PASSWORD }}
+          registry-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
   latest-dev:
     if: github.ref_name == 'main'
     name: latest-dev
-    uses: "./.github/actions/apko.yml"
-    with:
-      tag: latest-dev
-      target: dev
-    secrets: inherit
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/openvpn/apko/dev.yaml
+          tag: opopops/openvpn:latest-dev
+          github-token: ${{ secrets.GH_REGISTRY_PASSWORD }}
+          registry-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
   unstable:
     if: github.ref_name == 'dev'
     name: unstable
-    uses: "./.github/actions/apko.yml"
-    with:
-      scan: false
-    secrets: inherit
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/openvpn/apko/base.yaml
+          tag: opopops/openvpn:unstable
+          github-token: ${{ secrets.GH_REGISTRY_PASSWORD }}
+          registry-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
   unstable-dev:
     if: github.ref_name == 'dev'
     name: unstable-dev
-    uses: "./.github/actions/apko.yml"
-    with:
-      runner: self-hosted
-      scan: false
-    secrets: inherit
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/openvpn/apko/dev.yaml
+          tag: opopops/openvpn:unstable-dev
+          github-token: ${{ secrets.GH_REGISTRY_PASSWORD }}
+          registry-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
