@@ -5,9 +5,7 @@ contents:
     - bash
     - busybox
     - ca-certificates-bundle
-    - cosign
     - curl
-    - grype
     - helm
     - jq
     - k9s

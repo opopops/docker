@@ -8,20 +8,49 @@ on:
       - "opopops/iac/**"
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
 jobs:
   latest:
     if: github.ref_name == 'main'
     name: latest
-    uses: ./.github/actions/docker
-    with:
-      scan: false
-    secrets: inherit
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/docker
+        with:
+          context: opopops/iac
+          file: opopops/iac/Dockerfile
+          tag: opopops/iac:latest
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          scan: "false"
+          cosign: "false"
 
   unstable:
     if: github.ref_name == 'dev'
     name: unstable
-    uses: ./.github/actions/docker
-    with:
-      runner: self-hosted
-      scan: false
-    secrets: inherit
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/docker
+        with:
+          context: opopops/iac
+          file: opopops/iac/Dockerfile
+          tag: opopops/iac:unstable
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          scan: "false"
+          cosign: "false"

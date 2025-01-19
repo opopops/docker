@@ -49,11 +49,10 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - uses: imjasonh/setup-crane@v0.4
+
     - if: ${{ inputs.cosign == 'true' }}
       uses: sigstore/cosign-installer@v3
-
-    - if: ${{ inputs.scan == 'true' }}
-      uses: imjasonh/setup-crane@v0.4
 
     - uses: docker/login-action@v3
       id: login-to-github

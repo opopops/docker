@@ -121,18 +121,11 @@ RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_
 
 USER 65532
 
-FROM base AS dagger
-
-# --- Install dagger CLI
-ARG DAGGER_VERSION="0.15.2"
-ENV DAGGER_VERSION $DAGGER_VERSION
-RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /usr/bin dagger && \
-    chmod 755 /usr/bin/dagger
-
 FROM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION}
 
 LABEL org.opencontainers.image.authors="opopops"
+LABEL org.opencontainers.image.source="https://github.com/opopops/docker"
+LABEL org.opencontainers.image.description="IaC image based on Wolfi OS"
 
 USER root
 
@@ -152,7 +145,6 @@ RUN apk add --no-cache \
     yq
 
 # --- Install binaries
-COPY --link --from=dagger /usr/bin/dagger /usr/bin/dagger
 COPY --link --from=doctl /usr/bin/doctl /usr/bin/doctl
 COPY --link --from=helm /usr/bin/helm /usr/bin/helm
 COPY --link --from=helmfile /usr/bin/helmfile /usr/bin/helmfile

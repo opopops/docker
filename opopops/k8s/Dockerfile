@@ -17,7 +17,7 @@ RUN apk add --no-cache \
 FROM base AS kubectl
 
 # --- Install kubectl CLI
-ARG KUBECTL_VERSION="v1.29.5"
+ARG KUBECTL_VERSION="v1.30.7"
 ENV KUBECTL_VERSION $KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
     -o /usr/bin/kubectl && \
@@ -61,6 +61,8 @@ USER 65532
 FROM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION}
 
 LABEL org.opencontainers.image.authors="opopops"
+LABEL org.opencontainers.image.source="https://github.com/opopops/docker"
+LABEL org.opencontainers.image.description="K8S tools image based on Wolfi OS"
 
 USER root
 
