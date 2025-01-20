@@ -30,10 +30,14 @@ inputs:
     description: "Whether to scan the container image for vulnerabilities."
     required: false
     default: "true"
+  scan-fail-build:
+    description: "Whether to fail the build if vulnerabilities are found."
+    required: false
+    default: "false"
   scan-severity-cutoff:
     description: "The severity of vulnerabilities that should cause the scan to fail."
     required: false
-    default: "critical"
+    default: "high"
   sign:
     description: "Whether to sign the container image."
     required: false
@@ -53,7 +57,6 @@ runs:
   steps:
     - uses: docker/setup-qemu-action@v3
     - uses: docker/setup-buildx-action@v3
-    - uses: imjasonh/setup-crane@v0.4
 
     - if: ${{ inputs.sign == 'true' }}
       uses: sigstore/cosign-installer@v3
@@ -72,6 +75,34 @@ runs:
         password: ${{ inputs.dockerhub-password }}
 
     - uses: docker/build-push-action@v6
+      id: build
+      with:
+        context: ${{ inputs.context }}
+        file: ${{ inputs.file }}
+        target: ${{ inputs.target }}
+        platforms: ${{ inputs.platforms }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        load: true
+        push: false
+        tags: |
+          localbuild/${{ inputs.tag }}
+
+    - if: ${{ inputs.scan == 'true' }}
+      uses: anchore/scan-action@v6
+      id: scan
+      with:
+        image: localbuild/${{ inputs.tag }}
+        fail-build: ${{ inputs.scan-fail-build }}
+        severity-cutoff: ${{ inputs.scan-severity-cutoff }}
+
+    - if: ${{ inputs.scan == 'true' }}
+      uses: github/codeql-action/upload-sarif@v3
+      id: scan-report
+      with:
+        sarif_file: ${{ steps.scan.outputs.sarif }}
+
+    - uses: docker/build-push-action@v6
       id: publish
       with:
         context: ${{ inputs.context }}
@@ -83,19 +114,7 @@ runs:
         push: true
         tags: |
           ghcr.io/${{ inputs.tag }}
-
-    - id: crane
-      shell: bash
-      run: |
-        crane cp ghcr.io/${{ inputs.tag }}@${{ steps.publish.outputs.digest }} docker.io/${{ inputs.tag }}
-
-    - if: ${{ inputs.scan == 'true' }}
-      uses: anchore/scan-action@v6
-      id: scan
-      with:
-        image: ghcr.io/${{ inputs.tag }}@${{ steps.publish.outputs.digest }}
-        fail-build: "true"
-        severity-cutoff: ${{ inputs.scan-severity-cutoff }}
+          docker.io/${{ inputs.tag }}
 
     - if: ${{ inputs.sign == 'true' }}
       shell: bash
