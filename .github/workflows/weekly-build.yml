@@ -2,7 +2,7 @@ name: weekyly
 
 on:
   schedule:
-    - cron: "30 08 * * 1" # 07:05 every Monday
+    - cron: "45 07 * * 1" # 07:05 every Monday
   workflow_dispatch:
 
 permissions:
