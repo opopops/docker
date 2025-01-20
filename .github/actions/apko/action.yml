@@ -26,7 +26,7 @@ inputs:
     description: "The severity of vulnerabilities that should cause the scan to fail."
     required: false
     default: "critical"
-  cosign:
+  sign:
     description: "Whether to sign the container image."
     required: false
     default: "true"
@@ -51,7 +51,7 @@ runs:
   steps:
     - uses: imjasonh/setup-crane@v0.4
 
-    - if: ${{ inputs.cosign == 'true' }}
+    - if: ${{ inputs.sign == 'true' }}
       uses: sigstore/cosign-installer@v3
 
     - uses: docker/login-action@v3
@@ -87,7 +87,7 @@ runs:
         fail-build: "true"
         severity-cutoff: ${{ inputs.scan-severity-cutoff }}
 
-    - if: ${{ inputs.cosign == 'true' }}
+    - if: ${{ inputs.sign == 'true' }}
       shell: bash
       id: cosign
       env:

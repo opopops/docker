@@ -18,39 +18,15 @@ jobs:
   latest:
     if: github.ref_name == 'main'
     name: latest
-    environment: main
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Publish
-        id: publish
-        uses: ./.github/actions/apko
-        with:
-          config: opopops/grype/apko/base.yaml
-          tag: opopops/grype:latest
-          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      tag: latest
+    secrets: inherit
 
   unstable:
     if: github.ref_name == 'dev'
     name: unstable
-    environment: main
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Publish
-        id: publish
-        uses: ./.github/actions/apko
-        with:
-          config: opopops/grype/apko/base.yaml
-          tag: opopops/grype:unstable
-          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      tag: unstable
+    secrets: inherit

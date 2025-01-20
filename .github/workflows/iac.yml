@@ -18,39 +18,19 @@ jobs:
   latest:
     if: github.ref_name == 'main'
     name: latest
-    environment: main
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Publish
-        id: publish
-        uses: ./.github/actions/docker
-        with:
-          context: opopops/iac
-          file: opopops/iac/Dockerfile
-          tag: opopops/iac:latest
-          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-          scan: "false"
-          cosign: "false"
+    uses: "./.github/workflows/workflow-docker.yml"
+    with:
+      tag: latest
+      scan: "false"
+      sign: "false"
+    secrets: inherit
 
   unstable:
     if: github.ref_name == 'dev'
     name: unstable
-    environment: main
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Publish
-        id: publish
-        uses: ./.github/actions/docker
-        with:
-          context: opopops/iac
-          file: opopops/iac/Dockerfile
-          tag: opopops/iac:unstable
-          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-          scan: "false"
-          cosign: "false"
+    uses: "./.github/workflows/workflow-docker.yml"
+    with:
+      tag: unstable
+      scan: "false"
+      sign: "false"
+    secrets: inherit
