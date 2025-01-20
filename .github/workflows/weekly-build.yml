@@ -1,0 +1,146 @@
+name: weekyly
+
+on:
+  schedule:
+    - cron: "30 08 * * 1" # 07:05 every Monday
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+
+jobs:
+  apko:
+    name: apko
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/apko/apko/base.yaml
+          tag: opopops/apko:latest
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
+
+  crane:
+    name: crane
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/crane/apko/base.yaml
+          tag: opopops/crane:latest
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
+
+  grype:
+    name: grype
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/grype/apko/base.yaml
+          tag: opopops/grype:latest
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
+
+  helm:
+    name: helm
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/helm/apko/base.yaml
+          tag: opopops/helm:latest
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
+
+  melange:
+    name: melange
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/melange/apko/base.yaml
+          tag: opopops/melange:latest
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
+
+  openvpn:
+    name: openvpn
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/openvpn/apko/base.yaml
+          tag: opopops/openvpn:latest
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
+
+  shell:
+    name: shell
+    environment: main
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Publish
+        id: publish
+        uses: ./.github/actions/apko
+        with:
+          config: opopops/shell/apko/base.yaml
+          tag: opopops/shell:latest
+          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
+          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}

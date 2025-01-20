@@ -1,8 +1,6 @@
 name: openvpn
 
 on:
-  schedule:
-    - cron: "05 7 * * 1" # 07:05 every Monday
   push:
     branches:
       - "main"
