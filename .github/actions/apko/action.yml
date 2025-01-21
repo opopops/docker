@@ -88,6 +88,7 @@ runs:
       id: scan
       with:
         image: ${{ steps.apko.outputs.digest }}
+        cache-db: true
         fail-build: ${{ inputs.scan-fail-build }}
         severity-cutoff: ${{ inputs.scan-severity-cutoff }}
 

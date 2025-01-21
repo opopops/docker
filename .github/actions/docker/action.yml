@@ -93,6 +93,7 @@ runs:
       id: scan
       with:
         image: localbuild/${{ inputs.tag }}
+        cache-db: true
         fail-build: ${{ inputs.scan-fail-build }}
         severity-cutoff: ${{ inputs.scan-severity-cutoff }}
 
