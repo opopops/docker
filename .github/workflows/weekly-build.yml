@@ -10,6 +10,8 @@ permissions:
   packages: write
   attestations: write
   id-token: write
+  security-events: write
+  actions: read
 
 jobs:
   apko:
