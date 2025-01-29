@@ -1,0 +1,52 @@
+name: traefik
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "opopops/traefik/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+  security-events: write
+  actions: read
+
+jobs:
+  latest:
+    if: github.ref_name == 'main'
+    name: latest
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      tag: latest
+    secrets: inherit
+
+  latest-shell:
+    if: github.ref_name == 'main'
+    name: latest-dev
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      target: shell
+      tag: latest-shell
+    secrets: inherit
+
+  unstable:
+    if: github.ref_name == 'dev'
+    name: unstable
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      tag: unstable
+    secrets: inherit
+
+  unstable-shell:
+    if: github.ref_name == 'dev'
+    name: unstable-shell
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      target: shell
+      tag: unstable-shell
+    secrets: inherit

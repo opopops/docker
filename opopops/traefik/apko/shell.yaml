@@ -1,0 +1,11 @@
+include: opopops/traefik/apko/base.yaml
+
+contents:
+  packages:
+    - bash
+    - bind-tools
+    - busybox
+    - curl
+    - openssl
+    - vim
+    - wolfi-base
