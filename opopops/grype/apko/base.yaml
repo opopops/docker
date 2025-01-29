@@ -1,8 +1,5 @@
 include: apko.yaml
 
-annotations:
-  description: "Grype image based on Wolfi OS"
-
 contents:
   packages:
     - bash
@@ -21,3 +18,7 @@ entrypoint:
   command: /usr/bin/grype
 
 cmd: help
+
+annotations:
+  org.opencontainers.image.title: 'grype'
+  org.opencontainers.image.description: 'Grype image based on Wolfi OS'

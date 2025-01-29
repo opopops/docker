@@ -1,8 +1,5 @@
 include: apko.yaml
 
-annotations:
-  description: "Apko image based on Wolfi OS"
-
 contents:
   packages:
     - alpine-keys
@@ -18,3 +15,7 @@ entrypoint:
   command: /usr/bin/apko
 
 cmd: --help
+
+annotations:
+  org.opencontainers.image.title: 'apko'
+  org.opencontainers.image.description: 'Apko image based on Wolfi OS'

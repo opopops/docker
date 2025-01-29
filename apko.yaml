@@ -4,10 +4,6 @@ contents:
   repositories:
     - https://packages.wolfi.dev/os
 
-annotations:
-  image-author: opopops
-  image-source: https://github.com/opopops/docker
-
 accounts:
   groups:
     - groupname: nonroot
@@ -23,3 +19,8 @@ work-dir: /home/nonroot
 archs:
   - x86_64
   - aarch64
+
+annotations:
+  org.opencontainers.image.licenses: 'MIT'
+  org.opencontainers.image.authors: 'Opopops <lemaildegermain@gmail.com>'
+  org.opencontainers.image.source	: 'https://github.com/opopops/docker'
