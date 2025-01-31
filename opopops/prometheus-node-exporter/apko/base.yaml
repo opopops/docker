@@ -1,0 +1,15 @@
+include: apko.yaml
+
+contents:
+  packages:
+    - ca-certificates-bundle
+    - glibc-locale-posix
+    - prometheus-node-exporter
+    - wolfi-baselayout
+
+entrypoint:
+  command: /usr/bin/node_exporter
+
+annotations:
+  org.opencontainers.image.title: 'prometheus-node-exporter'
+  org.opencontainers.image.description: 'Prometheus node-exporter image based on Wolfi OS'
