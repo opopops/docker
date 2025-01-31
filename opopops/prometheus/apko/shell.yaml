@@ -1,4 +1,4 @@
-include: opopops/prometheus-node-exporter/apko/base.yaml
+include: opopops/prometheus/apko/base.yaml
 
 contents:
   packages:

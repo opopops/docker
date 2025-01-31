@@ -1,0 +1,33 @@
+include: apko.yaml
+
+contents:
+  packages:
+    - bash
+    - busybox
+    - ca-certificates-bundle
+    - glibc-locale-posix
+    - ld-linux
+    - libgcc
+    - libxcrypt
+    - grafana
+    - ncurses
+    - ncurses-terminfo-base
+    - wolfi-baselayout
+
+work-dir: /usr/share/grafana
+
+entrypoint:
+  command: /opt/grafana/run.sh
+
+environment:
+  GF_PATHS_CONFIG: /etc/grafana/grafana.ini
+  GF_PATHS_DATA: /var/lib/grafana
+  GF_PATHS_HOME: /usr/share/grafana
+  GF_PATHS_LOGS: /var/log/grafana
+  GF_PATHS_PLUGINS: /var/lib/grafana/plugins
+  GF_PATHS_PROVISIONING: /etc/grafana/provisioning
+  LANG: en_US.UTF-8
+
+annotations:
+  org.opencontainers.image.title: 'grafana'
+  org.opencontainers.image.description: 'Grafana image based on Wolfi OS'
