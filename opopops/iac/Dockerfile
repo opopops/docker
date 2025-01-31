@@ -39,7 +39,7 @@ USER 65532
 FROM base AS helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.16.4"
+ARG HELM_VERSION="v3.17.0"
 ENV HELM_VERSION=$HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -50,7 +50,7 @@ USER 65532
 FROM base AS helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.169.2"
+ARG HELMFILE_VERSION="0.170.1"
 ENV HELMFILE_VERSION=$HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin helmfile && \
@@ -61,7 +61,7 @@ USER 65532
 FROM base AS terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.10.4"
+ARG TERRAFORM_VERSION="1.10.5"
 ENV TERRAFORM_VERSION=$TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -87,7 +87,7 @@ USER 65532
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.72.0"
+ARG TERRAGRUNT_VERSION="0.72.6"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -98,7 +98,7 @@ USER 65532
 FROM base AS vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.18.3"
+ARG VAULT_VERSION="1.18.4"
 ENV VAULT_VERSION=$VAULT_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \

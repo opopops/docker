@@ -39,7 +39,7 @@ USER 65532
 FROM base AS helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.16.4"
+ARG HELM_VERSION="v3.17.0"
 ENV HELM_VERSION=$HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -50,7 +50,7 @@ USER 65532
 FROM base AS helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.169.2"
+ARG HELMFILE_VERSION="0.170.1"
 ENV HELMFILE_VERSION=$HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin helmfile && \
