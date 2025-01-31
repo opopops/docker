@@ -15,57 +15,157 @@ permissions:
 
 jobs:
   apko:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
     name: apko
     uses: "./.github/workflows/workflow-apko.yml"
     with:
       image: opopops/apko
-      tag: latest
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
     secrets: inherit
 
   crane:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
     name: crane
     uses: "./.github/workflows/workflow-apko.yml"
     with:
       image: opopops/crane
-      tag: latest
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
     secrets: inherit
 
   grype:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
     name: grype
     uses: "./.github/workflows/workflow-apko.yml"
     with:
       image: opopops/grype
-      tag: latest
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
     secrets: inherit
 
   helm:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
     name: helm
     uses: "./.github/workflows/workflow-apko.yml"
     with:
       image: opopops/helm
-      tag: latest
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
     secrets: inherit
 
   melange:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
     name: melange
     uses: "./.github/workflows/workflow-apko.yml"
     with:
       image: opopops/melange
-      tag: latest
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
     secrets: inherit
 
   openvpn:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
+            tag: latest
     name: openvpn
     uses: "./.github/workflows/workflow-apko.yml"
     with:
       image: opopops/openvpn
-      tag: latest
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
+    secrets: inherit
+
+  prometheus-node-exporter:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
+            tag: latest
+    name: prometheus-node-exporter
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      image: opopops/prometheus-node-exporter
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
     secrets: inherit
 
   shell:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
     name: shell
     uses: "./.github/workflows/workflow-apko.yml"
     with:
       image: opopops/shell
-      tag: latest
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
+    secrets: inherit
+
+  traefik:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
+            tag: latest
+    name: traefik
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      image: opopops/traefik
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
     secrets: inherit

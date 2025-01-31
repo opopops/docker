@@ -25,13 +25,13 @@ jobs:
       tag: latest
     secrets: inherit
 
-  latest-dev:
+  latest-shell:
     if: github.ref_name == 'main'
-    name: latest-dev
+    name: latest-shell
     uses: "./.github/workflows/workflow-apko.yml"
     with:
-      target: dev
-      tag: latest-dev
+      target: shell
+      tag: latest-shell
     secrets: inherit
 
   unstable:
@@ -42,11 +42,11 @@ jobs:
       tag: unstable
     secrets: inherit
 
-  unstable-dev:
-    if: github.ref_name == 'dev'
-    name: unstable-dev
+  unstable-shell:
+    if: github.ref_name == 'shell'
+    name: unstable-shell
     uses: "./.github/workflows/workflow-apko.yml"
     with:
-      target: dev
-      tag: unstable-dev
+      target: shell
+      tag: unstable-shell
     secrets: inherit
