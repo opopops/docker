@@ -16,8 +16,35 @@ contents:
 
 work-dir: /usr/share/grafana
 
+paths:
+  - path: /etc/grafana
+    type: directory
+    permissions: 0o770
+    uid: 65532
+    gid: 0
+  - path: /etc/grafana/provisioning
+    type: directory
+    permissions: 0o770
+    uid: 65532
+    gid: 0
+  - path: /var/lib/grafana
+    type: directory
+    permissions: 0o770
+    uid: 65532
+    gid: 0
+  - path: /var/lib/grafana/plugins
+    type: directory
+    permissions: 0o770
+    uid: 65532
+    gid: 0
+  - path: /var/log/grafana
+    type: directory
+    permissions: 0o770
+    uid: 65532
+    gid: 0
+
 entrypoint:
-  command: /opt/grafana/run.sh
+  command: /usr/bin/grafana
 
 environment:
   GF_PATHS_CONFIG: /etc/grafana/grafana.ini
