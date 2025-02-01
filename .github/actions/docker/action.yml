@@ -80,7 +80,7 @@ runs:
         context: ${{ inputs.context }}
         file: ${{ inputs.file }}
         target: ${{ inputs.target }}
-        platforms: ${{ inputs.platforms }}
+        platforms: linux/amd64
         cache-from: type=gha
         cache-to: type=gha,mode=max
         load: true
