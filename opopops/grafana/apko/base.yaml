@@ -44,7 +44,7 @@ paths:
     gid: 0
 
 entrypoint:
-  command: /usr/bin/grafana
+  command: /usr/bin/grafana server
 
 environment:
   GF_PATHS_CONFIG: /etc/grafana/grafana.ini

@@ -9,6 +9,18 @@ contents:
     - prometheus
     - wolfi-baselayout
 
+paths:
+  - path: /prometheus
+    type: directory
+    permissions: 0o770
+    uid: 65532
+    gid: 0
+  - path: /etc/prometheus
+    type: directory
+    permissions: 0o770
+    uid: 65532
+    gid: 0
+
 entrypoint:
   command: /usr/bin/prometheus
 
