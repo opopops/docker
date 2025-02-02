@@ -24,6 +24,10 @@ paths:
 entrypoint:
   command: /usr/bin/prometheus
 
+cmd: --config.file=/etc/prometheus/prometheus.yml --storage.tsdb.path=/prometheus
+
+work-dir: /prometheus
+
 annotations:
   org.opencontainers.image.title: 'prometheus'
   org.opencontainers.image.description: 'Prometheus image based on Wolfi OS'
