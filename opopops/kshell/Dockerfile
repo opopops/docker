@@ -62,7 +62,7 @@ FROM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION}
 
 LABEL org.opencontainers.image.authors="opopops"
 LABEL org.opencontainers.image.source="https://github.com/opopops/docker"
-LABEL org.opencontainers.image.description="K8S tools image based on Wolfi OS"
+LABEL org.opencontainers.image.description="Kubernetes tools image based on Wolfi OS"
 
 USER root
 
@@ -71,7 +71,6 @@ RUN apk add --no-cache \
     bind-tools \
     curl \
     jq \
-    nano \
     openssl \
     tzdata \
     unzip \

@@ -22,5 +22,5 @@ contents:
 cmd: /bin/sh -l
 
 annotations:
-  org.opencontainers.image.title: 'k8s'
-  org.opencontainers.image.description: 'K8S tools image based on Wolfi OS'
+  org.opencontainers.image.title: 'kshell'
+  org.opencontainers.image.description: 'Kuberenetes tools image based on Wolfi OS'

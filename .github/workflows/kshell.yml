@@ -1,11 +1,11 @@
-name: k8s
+name: kshell
 
 on:
   push:
     branches:
       - "main"
     paths:
-      - "opopops/k8s/**"
+      - "opopops/kshell/**"
   workflow_dispatch:
 
 permissions:

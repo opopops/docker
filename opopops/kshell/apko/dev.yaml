@@ -1,4 +1,4 @@
-include: opopops/k8s/apko/base.yaml
+include: opopops/kshell/apko/base.yaml
 
 contents:
   packages:

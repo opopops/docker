@@ -82,7 +82,7 @@ jobs:
       tag: ${{ matrix.tag }}
     secrets: inherit
 
-  k8s:
+  kshell:
     strategy:
       matrix:
         target: [base, dev]
@@ -92,10 +92,10 @@ jobs:
             tag: latest-dev
           - target: dev
             tag: latest
-    name: k8s
+    name: kshell
     uses: "./.github/workflows/workflow-apko.yml"
     with:
-      image: opopops/k8s
+      image: opopops/kshell
       target: ${{ matrix.target }}
       tag: ${{ matrix.tag }}
     secrets: inherit
