@@ -1,0 +1,14 @@
+include: apko.yaml
+
+contents:
+  packages:
+    - ca-certificates-bundle
+    - glibc
+    - libgcc
+    - libssl3
+    - python3
+    - wolfi-baselayout
+    - zlib
+
+entrypoint:
+  command: /usr/bin/python

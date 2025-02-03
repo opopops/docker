@@ -1,10 +1,8 @@
-include: opopops/openvpn/apko/base.yaml
+include: opopops/python/apko/base.yaml
 
 contents:
   packages:
     - bash
     - curl
-    - git
-    - nano
     - vim
     - wolfi-base

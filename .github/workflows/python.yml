@@ -1,4 +1,4 @@
-name: openvpn
+name: python
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "main"
       - "dev"
     paths:
-      - "opopops/openvpn/**"
+      - "opopops/python/**"
   workflow_dispatch:
 
 permissions:
@@ -35,6 +35,15 @@ jobs:
       tag: latest-shell
     secrets: inherit
 
+  latest-dev:
+    if: github.ref_name == 'main'
+    name: latest-dev
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      target: dev
+      tag: latest-dev
+    secrets: inherit
+
   unstable:
     if: github.ref_name == 'dev'
     name: unstable
@@ -50,4 +59,13 @@ jobs:
     with:
       target: shell
       tag: unstable-shell
+    secrets: inherit
+
+  unstable-dev:
+    if: github.ref_name == 'dev'
+    name: unstable-dev
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      target: dev
+      tag: unstable-dev
     secrets: inherit
