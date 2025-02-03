@@ -1,4 +1,4 @@
-include: opopops/k8s/apko/base.yaml
+include: opopops/shell/apko/base.yaml
 
 contents:
   packages:
@@ -8,6 +8,11 @@ contents:
     - wolfi-base
 
 accounts:
-  run-as: 0
+  run-as: root
 
 work-dir: /
+
+entrypoint:
+  command: ""
+
+cmd: /bin/sh -l

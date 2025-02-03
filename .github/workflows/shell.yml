@@ -25,10 +25,26 @@ jobs:
       tag: latest
     secrets: inherit
 
+  latest-dev:
+    if: github.ref_name == 'main'
+    name: latest-dev
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      tag: latest-dev
+    secrets: inherit
+
   unstable:
     if: github.ref_name == 'dev'
     name: unstable
     uses: "./.github/workflows/workflow-apko.yml"
     with:
       tag: unstable
+    secrets: inherit
+
+  unstable-dev:
+    if: github.ref_name == 'dev'
+    name: unstable-dev
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      tag: unstable-dev
     secrets: inherit

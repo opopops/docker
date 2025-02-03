@@ -1,4 +1,4 @@
-name: weekyly
+name: weekly
 
 on:
   schedule:
@@ -82,6 +82,24 @@ jobs:
       tag: ${{ matrix.tag }}
     secrets: inherit
 
+  k8s:
+    strategy:
+      matrix:
+        target: [base, dev]
+        tag: [latest, latest-dev]
+        exclude:
+          - target: base
+            tag: latest-dev
+          - target: dev
+            tag: latest
+    name: k8s
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      image: opopops/k8s
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
+    secrets: inherit
+
   melange:
     strategy:
       matrix:
@@ -135,15 +153,42 @@ jobs:
       tag: ${{ matrix.tag }}
     secrets: inherit
 
-  shell:
+  python:
     strategy:
       matrix:
-        target: [base, shell]
-        tag: [latest, latest-shell]
+        target: [base, shell, dev]
+        tag: [latest, latest-shell, latest-dev]
         exclude:
           - target: base
             tag: latest-shell
+          - target: base
+            tag: latest-dev
           - target: shell
+            tag: latest
+          - target: shell
+            tag: latest-dev
+          - target: dev
+            tag: latest
+          - target: dev
+            tag: latest-shell
+    name: python
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      image: opopops/python
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
+    secrets: inherit
+
+  shell:
+    strategy:
+      matrix:
+        target: [base, dev]
+        tag: [latest, latest-dev]
+        exclude:
+          - target: base
+            tag: latest-dev
+          - target: dev
+            tag: latest
     name: shell
     uses: "./.github/workflows/workflow-apko.yml"
     with:

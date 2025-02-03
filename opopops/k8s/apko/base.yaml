@@ -11,8 +11,8 @@ contents:
     - jq
     - k9s
     - kubectl
-    - nano
     - openssl
+    - tree
     - tzdata
     - unzip
     - vim

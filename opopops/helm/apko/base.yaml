@@ -7,6 +7,7 @@ contents:
     - ca-certificates-bundle
     - glibc-locale-posix
     - helm
+    - helm-docs
     - kubectl
     - wolfi-baselayout
 
