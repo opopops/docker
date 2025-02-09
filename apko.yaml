@@ -23,4 +23,4 @@ archs:
 annotations:
   org.opencontainers.image.licenses: 'MIT'
   org.opencontainers.image.authors: 'opopops <lemaildegermain@gmail.com>'
-  org.opencontainers.image.source	: 'https://github.com/opopops/docker'
+  org.opencontainers.image.source: 'https://github.com/opopops/docker'
