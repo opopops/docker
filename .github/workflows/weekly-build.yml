@@ -197,6 +197,24 @@ jobs:
       tag: ${{ matrix.tag }}
     secrets: inherit
 
+  socat:
+    strategy:
+      matrix:
+        target: [base, shell]
+        tag: [latest, latest-shell]
+        exclude:
+          - target: base
+            tag: latest-shell
+          - target: shell
+            tag: latest
+    name: socat
+    uses: "./.github/workflows/workflow-apko.yml"
+    with:
+      image: opopops/socat
+      target: ${{ matrix.target }}
+      tag: ${{ matrix.tag }}
+    secrets: inherit
+
   traefik:
     strategy:
       matrix:

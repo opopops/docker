@@ -1,11 +1,11 @@
-name: traefik
+name: socat
 
 on:
   push:
     branches:
       - "main"
     paths:
-      - "opopops/traefik/**"
+      - "opopops/socat/**"
   workflow_dispatch:
 
 permissions:
