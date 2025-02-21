@@ -49,7 +49,8 @@ jobs:
         uses: ./.github/actions/apko
         with:
           config: ${{ inputs.image }}/apko/${{ inputs.target}}.yaml
-          tag: ${{ inputs.image }}:${{ inputs.tag }}
+          image: ${{ inputs.image }}
+          tag: ${{ inputs.tag }}
           dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
           dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
           scan: ${{ inputs.scan }}

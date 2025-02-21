@@ -4,10 +4,13 @@ description: "Publish an APKO container image."
 inputs:
   config:
     description: "Path to the APKO configuration file."
-    required: false
+    required: true
+  image:
+    description: "The image name to publish."
+    required: true
   tag:
-    description: "The tag to publish the container image with."
-    required: false
+    description: "The image tag to publish."
+    required: true
   archs:
     description: "The architectures to build the container image for."
     required: false
@@ -53,6 +56,12 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - name: Create outputs
+      id: output
+      shell: bash
+      run: |
+        echo "sbom-path=$(mktemp -d -p /tmp -t apko.XXXXXX)" >> $GITHUB_OUTPUT
+
     - uses: imjasonh/setup-crane@v0.4
 
     - if: ${{ inputs.sign == 'true' }}
@@ -75,13 +84,17 @@ runs:
       id: apko
       with:
         config: ${{ inputs.config }}
-        tag: ghcr.io/${{ inputs.tag }}
+        tag: ghcr.io/${{ inputs.image }}:${{ inputs.tag }}
         archs: ${{ inputs.archs }}
+        sbom-path: ${{ steps.output.outputs.sbom-path }}
 
     - id: crane
       shell: bash
       run: |
-        crane cp ${{ steps.apko.outputs.digest }} docker.io/${{ inputs.tag }}
+        crane cp ${{ steps.apko.outputs.digest }} docker.io/${{ inputs.image }}:${{ inputs.tag }}
+        echo "digest=$(crane digest ghcr.io//${{ inputs.image }}:${{ inputs.tag }})" >> $GITHUB_OUTPUT
+        echo "digest-amd64=$(crane digest --platform=linux/amd64 ghcr.io//${{ inputs.image }}:${{ inputs.tag }})" >> $GITHUB_OUTPUT
+        echo "digest-arm64=$(crane digest --platform=linux/arm64 ghcr.io//${{ inputs.image }}:${{ inputs.tag }})" >> $GITHUB_OUTPUT
 
     - if: ${{ inputs.scan == 'true' }}
       uses: anchore/scan-action@v6
@@ -100,12 +113,38 @@ runs:
 
     - if: ${{ inputs.sign == 'true' }}
       shell: bash
-      id: cosign
+      id: sign
       env:
-        COSIGN_PASSWORD: ${{ inputs.cosign-password }}
-        COSIGN_PRIVATE_KEY: ${{ inputs.cosign-private-key }}
-        COSIGN_PUBLIC_KEY: ${{ inputs.cosign-public-key }}
         COSIGN_YES: "true"
       run: |
-        cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${{ steps.apko.outputs.digest }}
-        cosign verify --key env://COSIGN_PUBLIC_KEY ${{ steps.apko.outputs.digest }}
+        cosign sign --oidc-provider=github-actions ${{ steps.apko.outputs.digest }}
+
+    - if: ${{ inputs.sign == 'true' }}
+      uses: actions/attest-build-provenance@v2
+      id: attest-provenance
+      with:
+        subject-name: ghcr.io/${{ inputs.image }}
+        subject-digest: ${{ steps.crane.outputs.digest }}
+        push-to-registry: true
+
+    - if: ${{ inputs.sign == 'true' }}
+      shell: bash
+      id: attest-sbom
+      env:
+        COSIGN_YES: "true"
+      run: |
+        cosign attest \
+          --type=spdxjson \
+          --predicate=${{ steps.output.outputs.sbom-path }}/sbom-index.spdx.json \
+          --oidc-provider=github-actions \
+          ghcr.io/${{ inputs.image }}@${{ steps.crane.outputs.digest }}
+        cosign attest \
+          --type=spdxjson \
+          --predicate=${{ steps.output.outputs.sbom-path }}/sbom-aarch64.spdx.json \
+          --oidc-provider=github-actions \
+          ghcr.io/${{ inputs.image }}@${{ steps.crane.outputs.digest-arm64 }}
+        cosign attest \
+          --type=spdxjson \
+          --predicate=${{ steps.output.outputs.sbom-path }}/sbom-x86_64.spdx.json \
+          --oidc-provider=github-actions \
+          ghcr.io/${{ inputs.image }}@${{ steps.crane.outputs.digest-amd64 }}
