@@ -61,7 +61,7 @@ USER nonroot
 FROM base AS k9s
 
 # --- Install k9s CLI
-ARG K9S_VERSION="v0.32.7"
+ARG K9S_VERSION="v0.40.5"
 ENV K9S_VERSION $K9S_VERSION
 RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin k9s && \
@@ -72,7 +72,7 @@ USER nonroot
 FROM base AS helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.17.0"
+ARG HELM_VERSION="v3.17.1"
 ENV HELM_VERSION $HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -83,7 +83,7 @@ USER nonroot
 FROM base AS helmfile
 
 # --- Install helmfile CLI
-ARG HELMFILE_VERSION="0.170.1"
+ARG HELMFILE_VERSION="0.171.0"
 ENV HELMFILE_VERSION $HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin helmfile && \
@@ -105,7 +105,7 @@ USER nonroot
 FROM base AS cosign
 
 # --- Install cosign CLI
-ARG COSIGN_VERSION="2.4.1"
+ARG COSIGN_VERSION="2.4.3"
 ENV COSIGN_VERSION $COSIGN_VERSION
 RUN curl -fsSL https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-${TARGETOS}-${TARGETARCH} \
     -o /usr/bin/cosign && \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.72.6"
+ARG TERRAGRUNT_VERSION="0.73.11"
 ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -168,7 +168,7 @@ USER nonroot
 FROM base AS dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.15.3"
+ARG DAGGER_VERSION="0.16.1"
 ENV DAGGER_VERSION $DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \
