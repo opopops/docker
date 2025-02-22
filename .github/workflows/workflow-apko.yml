@@ -41,9 +41,29 @@ jobs:
   publish:
     environment: main
     runs-on: ubuntu-24.04-arm
+    outputs:
+      ref: ${{ steps.publish.outputs.ref }}
+      digest: ${{ steps.publish.outputs.digest }}
+      sbom-path: ${{ steps.publish.outputs.sbom-path }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Login to GitHub
+        uses: docker/login-action@v3
+        id: login-to-github
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        id: login-to-docker-hub
+        with:
+          username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
+          password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+
       - name: Publish
         id: publish
         uses: ./.github/actions/apko
@@ -51,10 +71,41 @@ jobs:
           config: ${{ inputs.image }}/apko/${{ inputs.target}}.yaml
           image: ${{ inputs.image }}
           tag: ${{ inputs.tag }}
-          dockerhub-username: ${{ vars.DOCKER_REGISTRY_USERNAME }}
-          dockerhub-password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
           scan: ${{ inputs.scan }}
-          sign: ${{ inputs.sign }}
-          cosign-password: ${{ secrets.COSIGN_PASSWORD }}
-          cosign-private-key: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          cosign-public-key: ${{ vars.COSIGN_PUBLIC_KEY }}
+
+      - name: Sign image and generate attestations
+        uses: ./.github/actions/cosign
+        with:
+          registry: ghcr.io
+          image: ${{ inputs.image }}
+          tag: ${{ inputs.tag }}
+          sbom-path: ${{ steps.publish.outputs.sbom-path }}
+
+      - name: Sign image and generate attestations on Docker Hub
+        uses: ./.github/actions/cosign
+        with:
+          registry: docker.io
+          image: ${{ inputs.image }}
+          tag: ${{ inputs.tag }}
+          sbom-path: ${{ steps.publish.outputs.sbom-path }}
+
+  scan:
+    environment: main
+    runs-on: ubuntu-24.04-arm
+    needs: publish
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub
+        uses: docker/login-action@v3
+        id: login-to-github
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Scan
+        uses: ./.github/actions/grype
+        with:
+          image: ${{ needs.publish.outputs.ref }}

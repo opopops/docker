@@ -15,43 +15,17 @@ inputs:
     description: "The architectures to build the container image for."
     required: false
     default: "x86_64,aarch64"
-  dockerhub-username:
-    description: "The username to authenticate with the Docker Hub container registry."
-    required: true
-  dockerhub-password:
-    description: "The password to authenticate with the Docker Hub container registry."
-    required: true
-  scan:
-    description: "Whether to scan the container image for vulnerabilities."
-    required: false
-    default: "true"
-  scan-fail-build:
-    description: "Whether to fail the build if vulnerabilities are found."
-    required: false
-    default: "false"
-  scan-severity-cutoff:
-    description: "The severity of vulnerabilities that should cause the scan to fail."
-    required: false
-    default: "high"
-  sign:
-    description: "Whether to sign the container image."
-    required: false
-    default: "true"
-  cosign-password:
-    description: "The password to sign the container image with."
-    required: false
-  cosign-private-key:
-    description: "The private key to sign the container image with."
-    required: false
-  cosign-public-key:
-    description: "The public key to verify the container image with."
-    required: false
 
 outputs:
   digest:
+    description: "The digest of the published container image."
+    value: ${{ steps.crane.outputs.digest }}
+  ref:
     value: ${{ steps.apko.outputs.digest }}
-    description: |
-      The digest of the published container image.
+    description: "The full qualified digest of the published container image."
+  sbom-path:
+    description: "The path to the SBOM index file."
+    value: ${{ steps.output.outputs.sbom-path }}
 
 runs:
   using: "composite"
@@ -63,22 +37,6 @@ runs:
         echo "sbom-path=$(mktemp -d -p /tmp -t apko.XXXXXX)" >> $GITHUB_OUTPUT
 
     - uses: imjasonh/setup-crane@v0.4
-
-    - if: ${{ inputs.sign == 'true' }}
-      uses: sigstore/cosign-installer@v3
-
-    - uses: docker/login-action@v3
-      id: login-to-github
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ github.token }}
-
-    - uses: docker/login-action@v3
-      id: login-to-docker-hub
-      with:
-        username: ${{ inputs.dockerhub-username }}
-        password: ${{ inputs.dockerhub-password }}
 
     - uses: distroless/actions/apko-publish@main
       id: apko
@@ -93,58 +51,3 @@ runs:
       run: |
         crane cp ${{ steps.apko.outputs.digest }} docker.io/${{ inputs.image }}:${{ inputs.tag }}
         echo "digest=$(crane digest ghcr.io//${{ inputs.image }}:${{ inputs.tag }})" >> $GITHUB_OUTPUT
-        echo "digest-amd64=$(crane digest --platform=linux/amd64 ghcr.io//${{ inputs.image }}:${{ inputs.tag }})" >> $GITHUB_OUTPUT
-        echo "digest-arm64=$(crane digest --platform=linux/arm64 ghcr.io//${{ inputs.image }}:${{ inputs.tag }})" >> $GITHUB_OUTPUT
-
-    - if: ${{ inputs.scan == 'true' }}
-      uses: anchore/scan-action@v6
-      id: scan
-      with:
-        image: ${{ steps.apko.outputs.digest }}
-        cache-db: true
-        fail-build: ${{ inputs.scan-fail-build }}
-        severity-cutoff: ${{ inputs.scan-severity-cutoff }}
-
-    - if: ${{ inputs.scan == 'true' }}
-      uses: github/codeql-action/upload-sarif@v3
-      id: scan-report
-      with:
-        sarif_file: ${{ steps.scan.outputs.sarif }}
-
-    - if: ${{ inputs.sign == 'true' }}
-      shell: bash
-      id: sign
-      env:
-        COSIGN_YES: "true"
-      run: |
-        cosign sign --oidc-provider=github-actions ${{ steps.apko.outputs.digest }}
-
-    - if: ${{ inputs.sign == 'true' }}
-      uses: actions/attest-build-provenance@v2
-      id: attest-provenance
-      with:
-        subject-name: ghcr.io/${{ inputs.image }}
-        subject-digest: ${{ steps.crane.outputs.digest }}
-        push-to-registry: true
-
-    - if: ${{ inputs.sign == 'true' }}
-      shell: bash
-      id: attest-sbom
-      env:
-        COSIGN_YES: "true"
-      run: |
-        cosign attest \
-          --type=spdxjson \
-          --predicate=${{ steps.output.outputs.sbom-path }}/sbom-index.spdx.json \
-          --oidc-provider=github-actions \
-          ghcr.io/${{ inputs.image }}@${{ steps.crane.outputs.digest }}
-        cosign attest \
-          --type=spdxjson \
-          --predicate=${{ steps.output.outputs.sbom-path }}/sbom-aarch64.spdx.json \
-          --oidc-provider=github-actions \
-          ghcr.io/${{ inputs.image }}@${{ steps.crane.outputs.digest-arm64 }}
-        cosign attest \
-          --type=spdxjson \
-          --predicate=${{ steps.output.outputs.sbom-path }}/sbom-x86_64.spdx.json \
-          --oidc-provider=github-actions \
-          ghcr.io/${{ inputs.image }}@${{ steps.crane.outputs.digest-amd64 }}
