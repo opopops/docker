@@ -87,7 +87,7 @@ USER 65532
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.73.11"
+ARG TERRAGRUNT_VERSION="0.73.13"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -98,7 +98,7 @@ USER 65532
 FROM base AS vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.18.4"
+ARG VAULT_VERSION="1.18.5"
 ENV VAULT_VERSION=$VAULT_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -113,7 +113,7 @@ USER 65532
 FROM base AS doctl
 
 # --- Install doctl CLI
-ARG DOCTL_VERSION="1.121.0"
+ARG DOCTL_VERSION="1.122.0"
 ENV DOCTL_VERSION=$DOCTL_VERSION
 RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin doctl && \
