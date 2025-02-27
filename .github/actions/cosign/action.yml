@@ -15,6 +15,7 @@ inputs:
   sbom-path:
     description: "The path to the SBOM directory."
     required: false
+    default: ${{ github.workspace }}/sbom
 
 runs:
   using: "composite"

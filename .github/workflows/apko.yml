@@ -17,18 +17,17 @@ permissions:
   actions: read
 
 jobs:
-  latest:
-    if: github.ref_name == 'main'
-    name: latest
+  publish:
+    strategy:
+      matrix:
+        include:
+          - tag: latest
+            target: base
+            packages: ''
+    name: ${{ matrix.tag }}
     uses: "./.github/workflows/workflow-apko.yml"
     with:
-      tag: latest
-    secrets: inherit
-
-  unstable:
-    if: github.ref_name == 'dev'
-    name: unstable
-    uses: "./.github/workflows/workflow-apko.yml"
-    with:
-      tag: unstable
+      tag: ${{ matrix.tag }}
+      target: ${{ matrix.target }}
+      packages: ${{ matrix.packages }}
     secrets: inherit
