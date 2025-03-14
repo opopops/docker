@@ -28,7 +28,7 @@ USER 65532
 FROM base AS k9s
 
 # --- Install k9s CLI
-ARG K9S_VERSION="v0.40.5"
+ARG K9S_VERSION="v0.40.8"
 ENV K9S_VERSION=$K9S_VERSION
 RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin k9s && \
@@ -39,7 +39,7 @@ USER 65532
 FROM base AS helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.17.1"
+ARG HELM_VERSION="v3.17.2"
 ENV HELM_VERSION=$HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
