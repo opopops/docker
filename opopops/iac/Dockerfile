@@ -28,7 +28,7 @@ USER 65532
 FROM base AS k9s
 
 # --- Install k9s CLI
-ARG K9S_VERSION="v0.40.8"
+ARG K9S_VERSION="v0.40.10"
 ENV K9S_VERSION=$K9S_VERSION
 RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin k9s && \
@@ -87,7 +87,7 @@ USER 65532
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.75.10"
+ARG TERRAGRUNT_VERSION="0.76.5"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
