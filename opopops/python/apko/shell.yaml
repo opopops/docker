@@ -1,8 +1,0 @@
-include: opopops/python/apko/base.yaml
-
-contents:
-  packages:
-    - bash
-    - curl
-    - vim
-    - wolfi-base
