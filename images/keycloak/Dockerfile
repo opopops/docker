@@ -2,7 +2,7 @@
 
 ARG KEYCLOAK_VERSION="latest"
 
-FROM bitnami/keycloak:${KEYCLOAK_VERSION}
+FROM bitnami/keycloak:${KEYCLOAK_VERSION} as prod
 
 ARG TARGETOS
 ARG TARGETARCH

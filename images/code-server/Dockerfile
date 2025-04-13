@@ -176,13 +176,16 @@ RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERS
 
 USER nonroot
 
-FROM lscr.io/linuxserver/code-server:${CODE_SERVER_VERSION}
+FROM lscr.io/linuxserver/code-server:${CODE_SERVER_VERSION} as prod
 
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETVARIANT
 
 LABEL org.opencontainers.image.authors="opopops"
+LABEL org.opencontainers.image.title="Code-Server"
+LABEL org.opencontainers.image.source="https://github.com/opopops/docker/tree/main/images/code-server"
+LABEL org.opencontainers.image.description="Code-Server image"
 
 ENV DEBIAN_FRONTEND="noninteractive"
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache

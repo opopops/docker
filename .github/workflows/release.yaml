@@ -1,0 +1,143 @@
+name: Reusable release workflow
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        description: 'Registry'
+        type: string
+        required: false
+        default: ghcr.io
+      registry-username:
+        description: 'Registry username'
+        type: string
+        required: false
+        default: ${{ github.actor }}
+      registry-password:
+        description: 'Registry password'
+        type: string
+        required: false
+        default: ''
+      image:
+        description: 'Image name'
+        type: string
+        required: false
+        default: opopops/${{ github.workflow }}
+      tag:
+        description: 'Image tag'
+        type: string
+        required: false
+        default: 'latest'
+      context:
+        description: 'Config directory'
+        type: string
+        required: false
+        default: images/${{ github.workflow }}
+      file:
+        description: 'Dockerfile'
+        type: string
+        required: false
+        default: images/${{ github.workflow }}/Dockerfile
+      target:
+        description: 'Image target'
+        type: string
+        required: false
+        default: ''
+      platforms:
+        description: 'Architectures'
+        type: string
+        required: false
+        default: 'linux/amd64,linux/arm64'
+      scan:
+        description: 'Enable scan'
+        type: string
+        required: false
+        default: 'true'
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
+  security-events: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: imjasonh/setup-crane@v0.4
+      - uses: sigstore/cosign-installer@v3
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Registry
+        uses: docker/login-action@v3
+        id: login-to-registry
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ inputs.registry-username }}
+          password: ${{ inputs.registry-password || github.token }}
+
+      - name: Build image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}
+          target: ${{ inputs.target }}
+          platforms: linux/amd64
+          cache-from: type=gha
+          load: true
+          push: false
+          tags: |
+            localbuild/${{ inputs.image }}:${{ inputs.tag }}
+
+      - if: ${{ inputs.scan == 'true' }}
+        name: Scan image
+        uses: anchore/scan-action@v6
+        id: scan
+        with:
+          image: localbuild/${{ inputs.image }}:${{ inputs.tag }}
+          cache-db: true
+          fail-build: 'false'
+          severity-cutoff: 'high'
+
+      - if: ${{ inputs.scan == 'true' }}
+        name: Upload scan report
+        uses: github/codeql-action/upload-sarif@v3
+        id: scan-report
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+
+      - name: Publish image
+        uses: docker/build-push-action@v6
+        id: publish
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}
+          target: ${{ inputs.target }}
+          platforms: ${{ inputs.platforms }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: true
+          sbom: true
+          provenance: mode=max
+          tags: |
+            ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.tag }}
+
+      - name: Sign image
+        id: sign
+        shell: bash
+        env:
+          COSIGN_YES: "true"
+        run: |
+          cosign sign \
+            --recursive \
+            --oidc-provider=github-actions \
+            ${{ inputs.registry }}/${{ inputs.image }}@${{ steps.publish.outputs.digest }}
