@@ -84,6 +84,13 @@ jobs:
           username: ${{ inputs.registry-username }}
           password: ${{ inputs.registry-password || github.token }}
 
+      - uses: docker/login-action@v3
+        id: login-to-dockerhub
+        with:
+          registry: docker.io
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Build image
         id: build
         uses: docker/build-push-action@v6
@@ -129,6 +136,7 @@ jobs:
           sbom: true
           provenance: mode=max
           tags: |
+            docker.io/${{ inputs.image }}:${{ inputs.tag }}
             ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.tag }}
 
       - name: Sign image
