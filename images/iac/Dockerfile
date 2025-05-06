@@ -43,7 +43,7 @@ USER 65532
 FROM base AS vault
 
 # --- Install vault CLI
-ARG VAULT_VERSION="1.19.2"
+ARG VAULT_VERSION="1.19.3"
 ENV VAULT_VERSION=$VAULT_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -58,7 +58,7 @@ USER 65532
 FROM base AS doctl
 
 # --- Install doctl CLI
-ARG DOCTL_VERSION="1.124.0"
+ARG DOCTL_VERSION="1.125.1"
 ENV DOCTL_VERSION=$DOCTL_VERSION
 RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin doctl && \
