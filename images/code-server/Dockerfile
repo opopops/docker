@@ -18,7 +18,7 @@ FROM base AS jq
 
 # --- Install jq CLI
 ARG JQ_VERSION="1.7.1"
-ENV JQ_VERSION $JQ_VERSION
+ENV JQ_VERSION=$JQ_VERSION
 RUN curl -fsL --output /usr/bin/jq \
     https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-${TARGETOS}-${TARGETARCH} && \
     chmod 755 /usr/bin/jq
@@ -29,7 +29,7 @@ FROM base AS yq
 
 # --- Install yq CLI
 ARG YQ_VERSION="v4.44.1"
-ENV YQ_VERSION $YQ_VERSION
+ENV YQ_VERSION=$YQ_VERSION
 RUN curl -fsL --output /usr/bin/yq \
     https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_${TARGETOS}_${TARGETARCH} && \
     chmod 755 /usr/bin/yq
@@ -40,7 +40,7 @@ FROM base AS powerline-go
 
 # --- Install yq CLI
 ARG POWERLINEGO_VERSION="v1.24"
-ENV POWERLINEGO_VERSION $POWERLINEGO_VERSION
+ENV POWERLINEGO_VERSION=$POWERLINEGO_VERSION
 RUN curl -fsL --output /usr/bin/powerline-go \
     https://github.com/justjanne/powerline-go/releases/download/${POWERLINEGO_VERSION}/powerline-go-${TARGETOS}-${TARGETARCH} && \
     chmod 755 /usr/bin/powerline-go
@@ -51,7 +51,7 @@ FROM base AS kubectl
 
 # --- Install kubectl CLI
 ARG KUBECTL_VERSION="v1.29.5"
-ENV KUBECTL_VERSION $KUBECTL_VERSION
+ENV KUBECTL_VERSION=$KUBECTL_VERSION
 RUN curl -fsSL https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl \
     -o /usr/bin/kubectl && \
     chmod 755 /usr/bin/kubectl
@@ -62,7 +62,7 @@ FROM base AS k9s
 
 # --- Install k9s CLI
 ARG K9S_VERSION="v0.50.4"
-ENV K9S_VERSION $K9S_VERSION
+ENV K9S_VERSION=$K9S_VERSION
 RUN curl -fsSL https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin k9s && \
     chmod 755 /usr/bin/k9s
@@ -73,7 +73,7 @@ FROM base AS helm
 
 # --- Install helm CLI
 ARG HELM_VERSION="v3.17.3"
-ENV HELM_VERSION $HELM_VERSION
+ENV HELM_VERSION=$HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
     chmod 755 /usr/bin/helm
@@ -84,7 +84,7 @@ FROM base AS helmfile
 
 # --- Install helmfile CLI
 ARG HELMFILE_VERSION="0.171.0"
-ENV HELMFILE_VERSION $HELMFILE_VERSION
+ENV HELMFILE_VERSION=$HELMFILE_VERSION
 RUN curl -fsSL https://github.com/helmfile/helmfile/releases/download/v${HELMFILE_VERSION}/helmfile_${HELMFILE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin helmfile && \
     chmod 755 /usr/bin/helmfile
@@ -95,7 +95,7 @@ FROM base AS grype
 
 # --- Install grype CLI
 ARG GRYPE_VERSION="0.91.2"
-ENV GRYPE_VERSION $GRYPE_VERSION
+ENV GRYPE_VERSION=$GRYPE_VERSION
 RUN curl -fsSL https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin grype && \
     chmod 755 /usr/bin/grype
@@ -106,7 +106,7 @@ FROM base AS cosign
 
 # --- Install cosign CLI
 ARG COSIGN_VERSION="2.5.0"
-ENV COSIGN_VERSION $COSIGN_VERSION
+ENV COSIGN_VERSION=$COSIGN_VERSION
 RUN curl -fsSL https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-${TARGETOS}-${TARGETARCH} \
     -o /usr/bin/cosign && \
     chmod 755 /usr/bin/cosign
@@ -117,10 +117,10 @@ FROM base AS terraform
 
 # --- Install terraform CLI
 ARG TERRAFORM_VERSION="1.11.4"
-ENV TERRAFORM_VERSION $TERRAFORM_VERSION
+ENV TERRAFORM_VERSION=$TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
-        -o ${TEMP_DIR}/terraform.zip && \
+    -o ${TEMP_DIR}/terraform.zip && \
     unzip -d $TEMP_DIR ${TEMP_DIR}/terraform.zip  && \
     mv ${TEMP_DIR}/terraform /usr/bin/terraform && \
     chmod 755 /usr/bin/terraform && \
@@ -132,7 +132,7 @@ FROM base AS tofu
 
 # --- Install tofu CLI
 ARG TOFU_VERSION="1.9.1"
-ENV TOFU_VERSION $TOFU_VERSION
+ENV TOFU_VERSION=$TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin tofu && \
     chmod 755 /usr/bin/tofu
@@ -143,7 +143,7 @@ FROM base AS terragrunt
 
 # --- Install terragrunt CLI
 ARG TERRAGRUNT_VERSION="0.78.1"
-ENV TERRAGRUNT_VERSION $TERRAGRUNT_VERSION
+ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
     chmod 755 /usr/bin/terragrunt
@@ -154,7 +154,7 @@ FROM base AS vault
 
 # --- Install vault CLI
 ARG VAULT_VERSION="1.19.3"
-ENV VAULT_VERSION $VAULT_VERSION
+ENV VAULT_VERSION=$VAULT_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
     -o ${TEMP_DIR}/vault.zip && \
@@ -169,14 +169,14 @@ FROM base AS dagger
 
 # --- Install dagger CLI
 ARG DAGGER_VERSION="0.18.6"
-ENV DAGGER_VERSION $DAGGER_VERSION
+ENV DAGGER_VERSION=$DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \
     chmod 755 /usr/bin/dagger
 
 USER nonroot
 
-FROM lscr.io/linuxserver/code-server:${CODE_SERVER_VERSION} as prod
+FROM lscr.io/linuxserver/code-server:${CODE_SERVER_VERSION} AS prod
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -214,7 +214,7 @@ ENV EDITOR=vi
 
 # --- Install docker
 ARG DOCKER_VERSION="28.1.1"
-ENV DOCKER_VERSION $DOCKER_VERSION
+ENV DOCKER_VERSION=$DOCKER_VERSION
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
@@ -233,10 +233,22 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
     apt-get install --yes --no-install-recommends \
     docker-buildx-plugin \
     docker-compose-plugin \
-    docker-ce-cli
+    docker-ce-cli \
+    pipx
 
 RUN groupadd -g 996 docker && \
     usermod -a -G docker abc
+
+ENV PATH="${PATH}:/config/.local/bin"
+
+# --- Install python packages
+RUN --mount=type=cache,target=/config/.cache/pip \
+    pipx install --include-deps ansible && \
+    pipx install ansible-lint && \
+    pipx install black && \
+    pipx install pylint && \
+    pipx install pytest && \
+    pipx install ruff
 
 # --- Install binaries
 COPY --link --from=cosign /usr/bin/cosign /usr/bin/cosign
@@ -253,25 +265,6 @@ COPY --link --from=terragrunt /usr/bin/terragrunt /usr/bin/terragrunt
 COPY --link --from=tofu /usr/bin/tofu /usr/bin/tofu
 COPY --link --from=vault /usr/bin/vault /usr/bin/vault
 COPY --link --from=yq /usr/bin/yq /usr/bin/yq
-
-# --- Install pipx
-ARG PIPX_BIN_DIR=/usr/local/bin
-ARG PIPX_HOME=/usr/local/pipx
-ENV PIPX_BIN_DIR $PIPX_BIN_DIR
-ENV PIPX_HOME $PIPX_HOME
-RUN --mount=type=cache,target=/config/.cache/pip \
-    mkdir -p \
-    ${PIPX_BIN_DIR} \
-    ${PIPX_HOME} && \
-    python3 -m pip install --break-system-packages pipx
-
-# --- Install python packages
-RUN --mount=type=cache,target=/config/.cache/pip \
-    pipx install --include-deps ansible && \
-    pipx install ansible-lint && \
-    pipx install black && \
-    pipx install pylint && \
-    pipx install pytest
 
 # --- Update bashrc
 RUN cat <<EOF >> /config/.bashrc
