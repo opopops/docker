@@ -142,8 +142,8 @@ jobs:
           sbom: true
           provenance: mode=max
           tags: |
-            docker.io/${{ inputs.image }}:${{ inputs.tag }}
             ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.tag }}
+            docker.io/${{ inputs.image }}:${{ inputs.tag }}
 
       - name: Sign image
         id: sign

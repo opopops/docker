@@ -204,6 +204,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
     nano \
     openssh-client \
     pigz \
+    pipx \
     python3-pip \
     python3-venv \
     rsync \
@@ -211,6 +212,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
     vim
 
 ENV EDITOR=vi
+ENV PATH="${PATH}:/config/.local/bin"
 
 # --- Install docker
 ARG DOCKER_VERSION="28.1.1"
@@ -233,17 +235,13 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
     apt-get install --yes --no-install-recommends \
     docker-buildx-plugin \
     docker-compose-plugin \
-    docker-ce-cli \
-    pipx
+    docker-ce-cli
 
 RUN groupadd -g 996 docker && \
     usermod -a -G docker abc
 
-ENV PATH="${PATH}:/config/.local/bin"
-
 # --- Install python packages
 RUN --mount=type=cache,target=/config/.cache/pip \
-    pipx install --include-deps ansible && \
     pipx install ansible-lint && \
     pipx install black && \
     pipx install pylint && \
@@ -273,10 +271,10 @@ alias la='ls -A'
 alias l='ls -CF'
 
 function _update_ps1() {
-    PS1="\$(/usr/local/bin/powerline-go -mode flat -hostname-only-if-ssh -cwd-max-depth 3 -modules cwd,git,terraform-workspace,kube -error \$? -jobs \$(jobs -p | wc -l))"
+    PS1="\$(/usr/bin/powerline-go -mode flat -hostname-only-if-ssh -cwd-max-depth 3 -modules cwd,git,terraform-workspace,kube -error \$? -jobs \$(jobs -p | wc -l))"
 }
 
-if [ "\$TERM" != "linux" ] && [ -f "/usr/local/bin/powerline-go" ]; then
+if [ "\$TERM" != "linux" ] && [ -f "/usr/bin/powerline-go" ]; then
     PROMPT_COMMAND="_update_ps1; \$PROMPT_COMMAND"
 fi
 EOF
