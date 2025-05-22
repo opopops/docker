@@ -94,7 +94,7 @@ USER nonroot
 FROM base AS grype
 
 # --- Install grype CLI
-ARG GRYPE_VERSION="0.92.1"
+ARG GRYPE_VERSION="0.92.2"
 ENV GRYPE_VERSION=$GRYPE_VERSION
 RUN curl -fsSL https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin grype && \
@@ -116,7 +116,7 @@ USER nonroot
 FROM base AS terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.12.0"
+ARG TERRAFORM_VERSION="1.12.1"
 ENV TERRAFORM_VERSION=$TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.78.4"
+ARG TERRAGRUNT_VERSION="0.80.2"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
