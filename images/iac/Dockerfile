@@ -58,7 +58,7 @@ USER 65532
 FROM base AS doctl
 
 # --- Install doctl CLI
-ARG DOCTL_VERSION="1.127.0"
+ARG DOCTL_VERSION="1.129.0"
 ENV DOCTL_VERSION=$DOCTL_VERSION
 RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin doctl && \
