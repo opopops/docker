@@ -243,10 +243,10 @@ RUN groupadd -g 996 docker && \
 # --- Install python packages
 RUN --mount=type=cache,target=/config/.cache/pip \
     pipx install ansible-lint && \
-    pipx install black && \
     pipx install pylint && \
     pipx install pytest && \
-    pipx install ruff
+    pipx install ruff && \
+    pipx install uv
 
 # --- Install binaries
 COPY --link --from=cosign /usr/bin/cosign /usr/bin/cosign
