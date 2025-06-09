@@ -97,6 +97,14 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.workflow }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-${{ github.workflow }}-
+
       - name: Build image
         id: build
         uses: docker/build-push-action@v6
@@ -105,7 +113,7 @@ jobs:
           file: ${{ inputs.file }}
           target: ${{ inputs.target }}
           platforms: linux/amd64
-          cache-from: type=gha
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           load: true
           push: false
           tags: |
@@ -136,14 +144,19 @@ jobs:
           file: ${{ inputs.file }}
           target: ${{ inputs.target }}
           platforms: ${{ inputs.platforms }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          cache-to: type=local,dest=${{ runner.temp }}/.buildx-cache-new,mode=max
           push: true
           sbom: true
           provenance: mode=max
           tags: |
             ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.tag }}
             docker.io/${{ inputs.image }}:${{ inputs.tag }}
+
+      - name: Move cache
+        run: |
+          rm -rf ${{ runner.temp }}/.buildx-cache
+          mv ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
 
       - name: Sign image
         id: sign
