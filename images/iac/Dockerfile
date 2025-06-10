@@ -55,21 +55,10 @@ RUN TEMP_DIR=$(mktemp -d) && \
 
 USER 65532
 
-FROM base AS doctl
-
-# --- Install doctl CLI
-ARG DOCTL_VERSION="1.127.0"
-ENV DOCTL_VERSION=$DOCTL_VERSION
-RUN curl -fsSL https://github.com/digitalocean/doctl/releases/download/v${DOCTL_VERSION}/doctl-${DOCTL_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
-    tar xvzf - -C /usr/bin doctl && \
-    chmod 755 /usr/bin/doctl
-
-USER 65532
-
-FROM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION} as prod
+FROM cgr.dev/chainguard/wolfi-base:${WOLFI_VERSION} AS prod
 
 LABEL org.opencontainers.image.authors="opopops"
-LABEL org.opencontainers.image.title="IaC"
+LABEL org.opencontainers.image.title="iac"
 LABEL org.opencontainers.image.source="https://github.com/opopops/docker/tree/main/images/iac"
 LABEL org.opencontainers.image.description="IaC image"
 
@@ -87,18 +76,16 @@ RUN apk add --no-cache \
     helm \
     jq \
     k9s \
-    kubectl~1.31 \
+    kubectl \
     openssl \
     opentofu \
     python-3.13 \
     py3.13-ansible-core \
-    terragrunt \
     tzdata \
     vim \
     yq
 
 # --- Install binaries
-COPY --link --from=doctl /usr/bin/doctl /usr/bin/doctl
 COPY --link --from=helmfile /usr/bin/helmfile /usr/bin/helmfile
 COPY --link --from=terraform /usr/bin/terraform /usr/bin/terraform
 COPY --link --from=vault /usr/bin/vault /usr/bin/vault
