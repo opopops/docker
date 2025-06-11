@@ -183,7 +183,7 @@ ARG TARGETARCH
 ARG TARGETVARIANT
 
 LABEL org.opencontainers.image.authors="opopops"
-LABEL org.opencontainers.image.title="Code-Server"
+LABEL org.opencontainers.image.title="code-server"
 LABEL org.opencontainers.image.source="https://github.com/opopops/docker/tree/main/images/code-server"
 LABEL org.opencontainers.image.description="Code-Server image"
 
@@ -249,26 +249,36 @@ RUN --mount=type=cache,target=/config/.cache/pip \
     pipx install uv
 
 # --- Install binaries
-COPY --link --from=cosign /usr/bin/cosign /usr/bin/cosign
-COPY --link --from=dagger /usr/bin/dagger /usr/bin/dagger
-COPY --link --from=grype /usr/bin/grype /usr/bin/grype
-COPY --link --from=helm /usr/bin/helm /usr/bin/helm
-COPY --link --from=helmfile /usr/bin/helmfile /usr/bin/helmfile
-COPY --link --from=jq /usr/bin/jq /usr/bin/jq
-COPY --link --from=k9s /usr/bin/k9s /usr/bin/k9s
-COPY --link --from=kubectl /usr/bin/kubectl /usr/bin/kubectl
-COPY --link --from=powerline-go /usr/bin/powerline-go /usr/bin/powerline-go
-COPY --link --from=terraform /usr/bin/terraform /usr/bin/terraform
-COPY --link --from=terragrunt /usr/bin/terragrunt /usr/bin/terragrunt
-COPY --link --from=tofu /usr/bin/tofu /usr/bin/tofu
-COPY --link --from=vault /usr/bin/vault /usr/bin/vault
-COPY --link --from=yq /usr/bin/yq /usr/bin/yq
+COPY --link --from=cosign /usr/bin/cosign /usr/local/bin/cosign
+COPY --link --from=dagger /usr/bin/dagger /usr/local/bin/dagger
+COPY --link --from=grype /usr/bin/grype /usr/local/bin/grype
+COPY --link --from=helm /usr/bin/helm /usr/local/bin/helm
+COPY --link --from=helmfile /usr/bin/helmfile /usr/local/bin/helmfile
+COPY --link --from=jq /usr/bin/jq /usr/local/bin/jq
+COPY --link --from=k9s /usr/bin/k9s /usr/local/bin/k9s
+COPY --link --from=kubectl /usr/bin/kubectl /usr/local/bin/kubectl
+COPY --link --from=powerline-go /usr/bin/powerline-go /usr/local/bin/powerline-go
+COPY --link --from=tofu /usr/bin/tofu /usr/bin/local/tofu
+COPY --link --from=vault /usr/bin/vault /usr/local/bin/vault
+COPY --link --from=yq /usr/bin/yq /usr/bin/local/yq
 
 # --- Update bashrc
 RUN cat <<EOF >> /config/.bashrc
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+
+alias d="docker"
+alias dri="docker run -it --rm --entrypoint=''"
+alias dprune="docker system prune -a -f"
+alias dshell="docker run -it --rm --pull always ghcr.io/opopops/wolfi/shell:latest-dev bash"
+alias dwolfi="docker run -it --rm --pull always cgr.dev/chainguard/wolfi-base:latest sh"
+alias dc="docker compose"
+alias k="kubectl"
+alias kshell="kubectl run shell --rm -i --tty --image-pull-policy='Always' --image ghcr.io/opopops/wolfi/shell:latest -- bash"
+alias kwolfi="kubectl run shell --rm -i --tty --image-pull-policy='Always' --image cgr.dev/chainguard/wolfi-base:latest -- bash"
+alias terraform='tofu'
+alias tf='tofu'
 
 function _update_ps1() {
     PS1="\$(/usr/bin/powerline-go -mode flat -hostname-only-if-ssh -cwd-max-depth 3 -modules cwd,git,terraform-workspace,kube -error \$? -jobs \$(jobs -p | wc -l))"
