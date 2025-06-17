@@ -72,7 +72,7 @@ USER nonroot
 FROM base AS helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.18.2"
+ARG HELM_VERSION="v3.18.3"
 ENV HELM_VERSION=$HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
@@ -105,7 +105,7 @@ USER nonroot
 FROM base AS cosign
 
 # --- Install cosign CLI
-ARG COSIGN_VERSION="2.5.0"
+ARG COSIGN_VERSION="2.5.1"
 ENV COSIGN_VERSION=$COSIGN_VERSION
 RUN curl -fsSL https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-${TARGETOS}-${TARGETARCH} \
     -o /usr/bin/cosign && \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.81.6"
+ARG TERRAGRUNT_VERSION="0.81.7"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
