@@ -105,7 +105,7 @@ USER nonroot
 FROM base AS cosign
 
 # --- Install cosign CLI
-ARG COSIGN_VERSION="2.5.1"
+ARG COSIGN_VERSION="2.5.2"
 ENV COSIGN_VERSION=$COSIGN_VERSION
 RUN curl -fsSL https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-${TARGETOS}-${TARGETARCH} \
     -o /usr/bin/cosign && \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.81.7"
+ARG TERRAGRUNT_VERSION="0.81.10"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
