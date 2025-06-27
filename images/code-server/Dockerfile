@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.82.2"
+ARG TERRAGRUNT_VERSION="0.82.3"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -168,7 +168,7 @@ USER nonroot
 FROM base AS dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.18.11"
+ARG DAGGER_VERSION="0.18.12"
 ENV DAGGER_VERSION=$DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \
