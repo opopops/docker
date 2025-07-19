@@ -105,7 +105,7 @@ USER nonroot
 FROM base AS cosign
 
 # --- Install cosign CLI
-ARG COSIGN_VERSION="2.5.2"
+ARG COSIGN_VERSION="2.5.3"
 ENV COSIGN_VERSION=$COSIGN_VERSION
 RUN curl -fsSL https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-${TARGETOS}-${TARGETARCH} \
     -o /usr/bin/cosign && \
@@ -168,7 +168,7 @@ USER nonroot
 FROM base AS dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.18.12"
+ARG DAGGER_VERSION="0.18.14"
 ENV DAGGER_VERSION=$DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \
