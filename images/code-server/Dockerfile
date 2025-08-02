@@ -94,7 +94,7 @@ USER nonroot
 FROM base AS grype
 
 # --- Install grype CLI
-ARG GRYPE_VERSION="0.97.0"
+ARG GRYPE_VERSION="0.97.1"
 ENV GRYPE_VERSION=$GRYPE_VERSION
 RUN curl -fsSL https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin grype && \
@@ -131,7 +131,7 @@ USER nonroot
 FROM base AS tofu
 
 # --- Install tofu CLI
-ARG TOFU_VERSION="1.10.4"
+ARG TOFU_VERSION="1.10.5"
 ENV TOFU_VERSION=$TOFU_VERSION
 RUN curl -fsSL https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin tofu && \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.83.2"
+ARG TERRAGRUNT_VERSION="0.84.0"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
