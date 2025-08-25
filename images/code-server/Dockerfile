@@ -116,7 +116,7 @@ USER nonroot
 FROM base AS terraform
 
 # --- Install terraform CLI
-ARG TERRAFORM_VERSION="1.12.2"
+ARG TERRAFORM_VERSION="1.13.0"
 ENV TERRAFORM_VERSION=$TERRAFORM_VERSION
 RUN TEMP_DIR=$(mktemp -d) && \
     curl -fsSL https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.85.0"
+ARG TERRAGRUNT_VERSION="0.86.2"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
