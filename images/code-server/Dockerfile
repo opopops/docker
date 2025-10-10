@@ -105,7 +105,7 @@ USER nonroot
 FROM base AS cosign
 
 # --- Install cosign CLI
-ARG COSIGN_VERSION="3.0.1"
+ARG COSIGN_VERSION="3.0.2"
 ENV COSIGN_VERSION=$COSIGN_VERSION
 RUN curl -fsSL https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-${TARGETOS}-${TARGETARCH} \
     -o /usr/bin/cosign && \
@@ -142,7 +142,7 @@ USER nonroot
 FROM base AS terragrunt
 
 # --- Install terragrunt CLI
-ARG TERRAGRUNT_VERSION="0.89.2"
+ARG TERRAGRUNT_VERSION="0.90.0"
 ENV TERRAGRUNT_VERSION=$TERRAGRUNT_VERSION
 RUN curl -fsSL https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH} \
     -o /usr/bin/terragrunt && \
@@ -168,7 +168,7 @@ USER nonroot
 FROM base AS dagger
 
 # --- Install dagger CLI
-ARG DAGGER_VERSION="0.19.1"
+ARG DAGGER_VERSION="0.19.2"
 ENV DAGGER_VERSION=$DAGGER_VERSION
 RUN curl -fsSL https://github.com/dagger/dagger/releases/download/v${DAGGER_VERSION}/dagger_v${DAGGER_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz | \
     tar xvzf - -C /usr/bin dagger && \
@@ -215,7 +215,7 @@ ENV EDITOR=vi
 ENV PATH="${PATH}:/config/.local/bin"
 
 # --- Install docker
-ARG DOCKER_VERSION="28.5.0"
+ARG DOCKER_VERSION="28.5.1"
 ENV DOCKER_VERSION=$DOCKER_VERSION
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
