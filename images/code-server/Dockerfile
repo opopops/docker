@@ -72,7 +72,7 @@ USER nonroot
 FROM base AS helm
 
 # --- Install helm CLI
-ARG HELM_VERSION="v3.19.2"
+ARG HELM_VERSION="v4.0.1"
 ENV HELM_VERSION=$HELM_VERSION
 RUN curl -fsSL https://get.helm.sh/helm-${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz | \
     tar xvzf - --strip-components=1 -C /usr/bin ${TARGETOS}-${TARGETARCH}/helm && \
