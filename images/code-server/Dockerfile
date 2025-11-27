@@ -215,7 +215,7 @@ ENV EDITOR=vi
 ENV PATH="${PATH}:/config/.local/bin"
 
 # --- Install docker
-ARG DOCKER_VERSION="28.5.2"
+ARG DOCKER_VERSION="29.1.0"
 ENV DOCKER_VERSION=$DOCKER_VERSION
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
