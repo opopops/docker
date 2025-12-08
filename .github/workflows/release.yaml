@@ -153,7 +153,6 @@ jobs:
           provenance: mode=max
           tags: |
             ${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.tag }}
-            docker.io/${{ inputs.image }}:${{ inputs.tag }}
 
       - name: Move cache
         run: |
