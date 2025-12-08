@@ -40,7 +40,6 @@
             "depNameTemplate": "dagger/dagger",
             "versioningTemplate": "semver",
             "fileMatch": [
-                "^\\.github\\/actions\\/\\apko\\.yml$",
                 "^\\.github\\/actions\\/\\docker\\.yml$",
                 "^images\\/.+\\/Dockerfile$"
             ],
@@ -169,6 +168,18 @@
             ],
             "matchStrings": [
                 "ARG VAULT_VERSION=\"(?<currentValue>.*?)\"\\n"
+            ]
+        },
+        {
+            "customType": "regex",
+            "datasourceTemplate": "github-tags",
+            "depNameTemplate": "jdx/mise",
+            "versioningTemplate": "semver",
+            "fileMatch": [
+                "^images\\/.+\\/Dockerfile$"
+            ],
+            "matchStrings": [
+                "ARG MISE_VERSION=\"(?<currentValue>.*?)\"\\n"
             ]
         }
     ]

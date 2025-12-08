@@ -1,0 +1,48 @@
+min_version = "2025.12.0"
+
+[settings]
+jobs = 4
+
+[tools]
+# Core tools
+python = { version = "3.13" }
+
+# Packages managers
+uv = { version = "latest" }
+pipx = { version = "latest" }
+
+# Additional tools
+apko = { version = "latest" }
+cosign = { version = "latest" }
+crane = { version = "latest" }
+dagger = { version = "latest" }
+docker-cli = { version = "latest" }
+docker-compose = { version = "latest" }
+envsubst = { version = "latest" }
+github-cli = { version = "latest" }
+gitleaks = { version = "latest" }
+grype = { version = "latest" }
+helm = { version = "latest" }
+helm-diff = { version = "latest" }
+helmfile = { version = "latest" }
+jq = { version = "latest" }
+k3d = { version = "latest" }
+k9s = { version = "latest" }
+kube-capacity = { version = "latest"}
+kubeconform = { version = "latest" }
+kubectl = { version = "latest" }
+kustomize = { version = "latest" }
+melange = { version = "latest" }
+opentofu = { version = "latest" }
+packer = { version = "latest" }
+powerline-go = { version = "1.25" }
+pre-commit = { version = "latest" }
+ruff = { version = "latest" }
+usage = { version = "latest" }
+yq = { version = "latest" }
+
+# Pipx tools
+"pipx:ansible" = { version = "latest", uvx = "false", pipx_args = "--include-deps" }
+
+# GiHub Tools: https://mise.jdx.dev/dev-tools/backends/github.html#github-backend
+"github:docker/buildx" = { version = "latest" , bin = "docker-buildx"}

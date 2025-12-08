@@ -31,4 +31,5 @@ jobs:
     with:
       tag: ${{ matrix.version }}${{ matrix.variant == 'dev' && '-dev' || '' }}
       target: ${{ matrix.variant }}
+      scan: 'false'
     secrets: inherit

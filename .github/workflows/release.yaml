@@ -114,6 +114,8 @@ jobs:
           target: ${{ inputs.target }}
           platforms: linux/amd64
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
+          secrets: |
+            "github_token=${{ secrets.GITHUB_TOKEN }}"
           load: true
           pull: true
           push: false
@@ -147,6 +149,8 @@ jobs:
           platforms: ${{ inputs.platforms }}
           cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
           cache-to: type=local,dest=${{ runner.temp }}/.buildx-cache-new,mode=max
+          secrets: |
+            github_token=${{ secrets.GITHUB_TOKEN }}
           pull: true
           push: true
           sbom: true
