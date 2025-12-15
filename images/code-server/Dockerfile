@@ -3,7 +3,7 @@
 ARG WOLFI_VERSION="latest"
 ARG CODE_SERVER_VERSION="latest"
 
-ARG MISE_VERSION="2025.12.2"
+ARG MISE_VERSION="2025.12.7"
 FROM jdxcode/mise:${MISE_VERSION} AS mise
 
 FROM lscr.io/linuxserver/code-server:${CODE_SERVER_VERSION} AS prod
