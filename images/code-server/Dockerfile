@@ -3,9 +3,6 @@
 ARG WOLFI_VERSION="latest"
 ARG CODE_SERVER_VERSION="latest"
 
-ARG MISE_VERSION="2025.12.7"
-FROM jdxcode/mise:${MISE_VERSION} AS mise
-
 FROM lscr.io/linuxserver/code-server:${CODE_SERVER_VERSION} AS prod
 
 ARG TARGETOS
@@ -38,24 +35,16 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
     vim
 
 # --- Install mise
-ENV MISE_CACHE_DIR=/mise/cache \
-    MISE_CONFIG_DIR=/mise \ 
-    MISE_DATA_DIR=/mise
-
+ARG MISE_VERSION="2025.12.7"
+ENV MISE_DATA_DIR="/mise" \
+    MISE_CONFIG_DIR="/mise" \
+    MISE_CACHE_DIR="/mise/cache" \
+    MISE_INSTALL_PATH="/usr/local/bin/mise" \
+    MISE_VERSION="${MISE_VERSION}"
 RUN mkdir -p \
-        $MISE_CONFIG_DIR \
         $MISE_CACHE_DIR \
-        $MISE_DATA_DIR && \
-    chown 1000:0 \
-        $MISE_CONFIG_DIR \
-        $MISE_CACHE_DIR \
-        $MISE_DATA_DIR && \
-    chmod 775 \
-        $MISE_CONFIG_DIR \
-        $MISE_DATA_DIR && \
-    chmod 777 $MISE_CACHE_DIR
-
-COPY --link --from=mise /usr/local/bin/mise /usr/local/bin/mise
+    chmod 777 $MISE_CACHE_DIR && \
+    curl https://mise.run | sh
 COPY ./mise.toml ${MISE_CONFIG_DIR}/mise.toml
 RUN --mount=type=cache,id=mise-cache,target=${MISE_CACHE_DIR} \
     --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
