@@ -41,13 +41,11 @@ ENV MISE_DATA_DIR="/mise" \
     MISE_CACHE_DIR="/mise/cache" \
     MISE_INSTALL_PATH="/usr/local/bin/mise" \
     MISE_VERSION="${MISE_VERSION}"
-RUN mkdir -p \
-        $MISE_CACHE_DIR \
-    chmod 777 $MISE_CACHE_DIR && \
-    curl https://mise.run | sh
+RUN mkdir -m 777 -p $MISE_CACHE_DIR \
 COPY ./mise.toml ${MISE_CONFIG_DIR}/mise.toml
 RUN --mount=type=cache,id=mise-cache,target=${MISE_CACHE_DIR} \
     --mount=type=secret,id=github_token,env=GITHUB_TOKEN \
+    curl https://mise.run | sh && \
     mise upgrade
 
 ENV EDITOR=vi
