@@ -35,7 +35,7 @@ RUN --mount=type=cache,id=apt-cache-${TARGETARCH}${TARGETVARIANT},target=/var/ca
     vim
 
 # --- Install mise
-ARG MISE_VERSION="2025.12.12"
+ARG MISE_VERSION="2026.1.2"
 ENV MISE_DATA_DIR="/mise" \
     MISE_CONFIG_DIR="/mise" \
     MISE_CACHE_DIR="/mise/cache" \
