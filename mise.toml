@@ -1,66 +1,14 @@
+redactions = ["SECRET_*", "*_TOKEN", "*_PASSWORD"]
+
 [env]
 GITHUB_TOKEN = { value = "{{env.GITHUB_TOKEN}}", redact = true}
+OCI_REGISTRY = { value = "ghcr.io" }
+OCI_REGISTRY_NAMESPACE = { value = "opopops"}
 
 [tools]
 docker-cli = { version = "latest" }
-go = { version = "1.24" }
-golangci-lint ={ version = "latest" }
 helm = { version = "3" }
 helm-diff = { version = "latest" }
 
 # GiHub Tools: https://mise.jdx.dev/dev-tools/backends/github.html#github-backend
 "github:docker/buildx" = { version = "latest" , bin = "docker-buildx"}
-
-[tasks."docker:build"]
-description = "Build docker image (alias: d:build)"
-alias = ["d:build", "build"]
-dir = "{{ config_root }}"
-usage = '''
-arg "<image>" help="image to build"
-flag "--builder <builder>" default="local" help="docker builder name"
-flag "--platform <platform>" default="linux/amd64,linux/arm64" help="platforms"
-flag "--push" default="false" help="publish docker image"
-flag "-x" default="false" help="Enable Debug mode"
-'''
-run = '''
-#!/usr/bin/env bash
-set -euo pipefail
-
-[[ "$usage_x" == "true" ]] && set -x
-
-ARCH=$(uname -m)
-
-BUILDER_NAME="${usage_builder}"
-# Keep 10GB of storage max
-BUILDER_GC_KEEPSTORAGE=$((10 * 1024 * 1024 * 1024))
-DOCKER_BUILD_ARGS=""
-TAG="ghcr.io/opopops/${usage_image}"
-
-if [[ "${usage_push}" == "true" ]]; then
-  DOCKER_BUILD_ARGS+=" --push"
-  echo "$GITHUB_TOKEN" | docker login ghcr.io -u USERNAME --password-stdin
-else
-  DOCKER_BUILD_ARGS+=" --load"
-  usage_platform="linux/${ARCH/x86_64/amd64}"
-fi
-
-# Go to the image directroy
-cd images/${usage_image}
-
-# Check if the builder already exists
-if docker-buildx inspect "$BUILDER_NAME" >/dev/null 2>&1; then
-  docker-buildx use "$BUILDER_NAME"
-else
-  docker-buildx create \
-    --name="$BUILDER_NAME" \
-    --driver=docker-container \
-    --bootstrap \
-    --use \
-    --driver-opt="env.BUILDKITD_FLAGS=--oci-worker-gc-keepstorage=$BUILDER_GC_KEEPSTORAGE"
-fi
-
-docker-buildx build \
-  --platform=${usage_platform} \
-  --secret id=github_token,env=GITHUB_TOKEN \
-  --tag ${TAG,,} ${DOCKER_BUILD_ARGS} .
-'''

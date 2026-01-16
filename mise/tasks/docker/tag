@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+#MISE description="Tag Docker image (alias: d:tag)"
+#MISE alias=['d:tag']
+#MISE dir="{{ cwd }}"
+
+#USAGE arg "<tag>" help="Specify the tag to add"
+#USAGE flag "-i --image <image>" default="" help="Specify Image name"
+#USAGE flag "-v --version <version>" help="Specify the image version"
+#USAGE flag "-x" default=#false help="Enable Debug mode"
+
+set -euo pipefail
+
+[[ "$usage_x" == "true" ]] && set -x
+
+if [[ -n "${usage_image}" ]]; then
+  IMAGE=${usage_image}:${usage_version}
+else
+  IMAGE=${OCI_REGISTRY}/${OCI_REGISTRY_NAMESPACE}/$(basename $PWD):${usage_version}
+fi
+
+crane tag ${IMAGE} ${usage_tag}

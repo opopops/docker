@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+#MISE description="Build docker image (alias: d:build)"
+#MISE alias=['d:build']
+#MISE dir="{{ cwd }}"
+
+#USAGE flag "-f --file <file>" default="Dockerfile" help="Name of the Dockerfile"
+#USAGE flag "-i --image <image>" default="" help="Specify Image name"
+#USAGE flag "-v --version <version>" default="dev" help="Specify the version of the image"
+#USAGE flag "--build-arg <build-arg>" var=#true help="Set build-time variables"
+#USAGE flag "--secret <secret>" var=#true help="Secret to expose to the build"
+#USAGE flag "--target <target>" default="" help="Build the specified Dockerfile target"
+#USAGE flag "--platform <platform>" default="linux/amd64" help="Specify platforms"
+#USAGE flag "--builder <builder>" default="local" help="Builder name"
+#USAGE flag "--cache-from <cache-from>" default="" help="External cache sources"
+#USAGE flag "--cache-to <cache-to>" default="" help="Cache export destinations"
+#USAGE flag "--cache-size <cache-size>" default="10" help="Builder cache size in GB"
+#USAGE flag "--pull" default=#false help="Always attempt to pull all referenced images"
+#USAGE flag "--push" default=#false help="Publish docker image to the registry"
+#USAGE flag "--provenance" default=#false help="Attest provenance"
+#USAGE flag "--sbom" default=#false help="Publish SBOM"
+#USAGE flag "-x" default=#false help="Enable Debug mode"
+
+set -euo pipefail
+
+[[ "$usage_x" == "true" ]] && set -x
+
+ARCH=$(uname -m)
+
+BUILDER_NAME="${usage_builder}"
+# Keep 10GB of storage max
+BUILDER_CACHE_SIZE=$((${usage_cache_size} * 1024 * 1024 * 1024))
+DOCKER_BUILD_ARGS=""
+
+if [[ -n "${usage_image}" ]]; then
+  TAG=${usage_image}:${usage_version}
+else
+  TAG=${OCI_REGISTRY}/${OCI_REGISTRY_NAMESPACE}/$(basename $PWD):${usage_version}
+fi
+
+for build_arg in ${usage_build_arg:-}; do
+  DOCKER_BUILD_ARGS+=" --build-arg=${build_arg}"
+done
+
+for secret in ${usage_secret:-}; do
+  DOCKER_BUILD_ARGS+=" --secret=${secret}"
+done
+
+if [[ -n "${usage_target}" ]]; then
+  DOCKER_BUILD_ARGS+=" --target=${usage_target}"
+fi
+
+if [[ -n "${usage_cache_from}" ]]; then
+  DOCKER_BUILD_ARGS+=" --cache-from=${usage_cache_from}"
+fi
+
+if [[ -n "${usage_cache_to}" ]]; then
+  DOCKER_BUILD_ARGS+=" --cache-to=${usage_cache_to}"
+fi
+
+if [[ "${usage_push}" == "true" ]]; then
+  DOCKER_BUILD_ARGS+=" --push"
+else
+  DOCKER_BUILD_ARGS+=" --load"
+  usage_platform="linux/${ARCH/x86_64/amd64}"
+fi
+
+if [[ "${usage_provenance}" == "true" ]]; then
+  DOCKER_BUILD_ARGS+=" --provenance"
+fi
+
+if [[ "${usage_sbom}" == "true" ]]; then
+  DOCKER_BUILD_ARGS+=" --sbom"
+fi
+
+# Check if the builder already exists
+if docker-buildx inspect "$BUILDER_NAME" >/dev/null 2>&1; then
+  docker-buildx use "$BUILDER_NAME"
+else
+  docker-buildx create \
+    --name="$BUILDER_NAME" \
+    --driver=docker-container \
+    --bootstrap \
+    --use \
+    --driver-opt="env.BUILDKITD_FLAGS=--oci-worker-gc-keepstorage=$BUILDER_CACHE_SIZE"
+fi
+
+docker-buildx build \
+  --file=${usage_file} \
+  --platform=${usage_platform} \
+  --pull=${usage_pull} \
+  --tag ${TAG} ${DOCKER_BUILD_ARGS} .

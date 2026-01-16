@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+#MISE description="Login to docker registry (alias: d:login)"
+#MISE alias=['d:login']
+#MISE dir="{{ cwd }}"
+
+#USAGE arg "<registry>" env=OCI_REGISTRY default="ghcr.io" help="Registry host"
+#USAGE flag "-u --username <username>" default="USERNAME"  help="Username"
+#USAGE flag "-p --password <password>" env=DOCKER_PASSWORD  help="Password"
+#USAGE flag "-x" default=#false help="Enable Debug mode"
+
+set -euo pipefail
+
+[[ "$usage_x" == "true" ]] && set -x
+
+echo "${usage_password}" | docker login ${usage_registry} -u USERNAME --password-stdin
