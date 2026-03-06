@@ -23,7 +23,6 @@ github-cli = { version = "latest" }
 gitleaks = { version = "latest" }
 grype = { version = "latest" }
 helm = { version = "latest" }
-helm-diff = { version = "latest" }
 helmfile = { version = "latest" }
 jq = { version = "latest" }
 k3d = { version = "latest" }
@@ -35,7 +34,7 @@ kustomize = { version = "latest" }
 melange = { version = "latest" }
 opentofu = { version = "latest" }
 packer = { version = "latest" }
-powerline-go = { version = "1.25" }
+powerline-go = { version = "latest" }
 pre-commit = { version = "latest" }
 ruff = { version = "latest" }
 usage = { version = "latest" }

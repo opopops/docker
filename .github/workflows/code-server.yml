@@ -22,14 +22,16 @@ jobs:
   publish:
     strategy:
       matrix:
-        version: [latest]
+        arch: [amd64, arm64]
         variant: [prod]
+        version: [latest]
         include:
           - version: latest
-    name: ${{ matrix.version }}${{ matrix.variant == 'dev' && '-dev' || '' }}
+    name: ${{ matrix.version }}-${{ matrix.arch }}${{ matrix.variant == 'dev' && '-dev' || '' }}
     uses: './.github/workflows/release.yaml'
     with:
-      tag: ${{ matrix.version }}${{ matrix.variant == 'dev' && '-dev' || '' }}
+      platforms: linux/${{ matrix.arch }}
       target: ${{ matrix.variant }}
+      tag: ${{ matrix.version }}-${{ matrix.arch }}${{ matrix.variant == 'dev' && '-dev' || '' }}
       scan: 'false'
     secrets: inherit

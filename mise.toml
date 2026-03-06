@@ -1,14 +1,24 @@
 redactions = ["SECRET_*", "*_TOKEN", "*_PASSWORD"]
 
+[settings]
+# Core settings
+experimental = true
+jobs = 4
+# Backends settings
+aqua.github_attestations = false
+github.slsa = false
+
+[vars]
+project = 'docker'
+
 [env]
-GITHUB_TOKEN = { value = "{{env.GITHUB_TOKEN}}", redact = true}
 OCI_REGISTRY = { value = "ghcr.io" }
 OCI_REGISTRY_NAMESPACE = { value = "opopops"}
 
 [tools]
+cosign = { version = "latest" }
+crane = { version = "latest" }
 docker-cli = { version = "latest" }
-helm = { version = "3" }
-helm-diff = { version = "latest" }
 
 # GiHub Tools: https://mise.jdx.dev/dev-tools/backends/github.html#github-backend
 "github:docker/buildx" = { version = "latest" , bin = "docker-buildx"}
